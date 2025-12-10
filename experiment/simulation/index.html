@@ -1,13 +1,185 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<!-- Add CSS at the head of HTML file -->
-    <link rel="stylesheet" href="./css/main.css">
-</head>
-<body>
-		<!-- Your code goes here-->
+<html lang="en">
 
-	<!-- Add JS at the bottom of HTML file --> 
-        <script src="./js/main.js"></script>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+    <div class="container" id="box">
+        <!-- Instructions -->
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">×</span>
+                    <h2>Instruction</h2>
+                </div>
+                <div class="modal-body">
+
+                    <p>
+                    <ol type="1" style="font-size: 18px;color:black">
+                        <li>Click on <b>DATASET</b> tab to start the simulation.</li>
+                    </ol>
+                    </p>
+
+                </div>
+                <div class="modal-footer">
+                    <br>
+                </div>
+            </div>
+        </div>
+
+        <!-- header -->
+        <header class="header">
+            <div class="tabs">
+
+                <!-- tabs -->
+                <div id="tab-1" style="display: flex; border-right: 2px solid #F5F5F5;" onclick="window.location.href='corpus1.html'" >
+                    <div class="tab-create" id="tab-create">
+                        <a href="corpus1.html" class="tab-text" id="todecide">DATASET</a>
+                    </div>
+                  
+                        <img id='createimg' src="images/data.png"
+                            style="margin-top: 3px; margin-right: 10px; height: 85%;"  onclick="window.location.href='corpus1.html'"></button>
+
+                </div>
+                <div id="tab-2" style="display: flex; border-right: 2px solid #F5F5F5; cursor:not-allowed;">
+                    <div class="tab-create tab-text" style="cursor:not-allowed;">   
+                       TRAINING
+                    </div>
+                    <img src="images/training.png"
+                        style="margin-top: 3px; margin-right: 10px; height: 85%;cursor:not-allowed;" >
+                </div>
+                <div id="tab-3"
+                    style="display: flex; border-right: 2px solid #F5F5F5;  cursor:not-allowed;">
+                    <div class="tab-create tab-text" style="cursor:not-allowed;">
+                        PREDICTION
+                    </div>
+                    <img src="images/analyse.png" style="margin-top: 3px; margin-right: 10px; height: 85%">
+
+                </div>
+            </div>
+            <a class="header-text" id="myBtn" style="padding-top: 8px" href="#">INSTRUCTIONS</a>
+        </header>
+        <body>
+           
+        <div style="width:80%;margin-top: 2.3in; margin-left: 1in;">
+            <center>
+                <p style="color:#333;font-size: 24px;text-align: justify;">
+                    To understand the working of document classification, let's consider a simple example for sentiment detection with 6 training sets that describe the class of the document. To begin, click on the <b style="color:#004E86;">DATASET</b> tab.
+                 </p>
+                 
+            </center>
+            
+        </div>
+
+        </body>
+
+
+
+
+        <!-- footer -->
+        <footer class="footer">
+            <span class="footer-text">© 2025 Virtual Labs, IIT Roorkee</span>
+        </footer>
+
+    </div>
+    <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.js"></script>
+    <script>
+        function Submit(){
+            
+
+        const myContainer = document.getElementById('box');
+        Swal.fire({
+            icon: 'info',
+            html: 'Click on the <b>DATASET</b> tab.',
+            allowOutsideClick: false,
+            customClass: {
+                container: "swal-container",
+                popup: "swal-popup",
+                title: "swal-title",
+                content: "swal-content",
+            },
+            target: myContainer,
+            didOpen: () => {
+                const container = document.querySelector('.swal-container');
+                const containerWidth = myContainer.offsetWidth;
+                const containerHeight = myContainer.offsetHeight;
+
+                if (containerWidth >= 1000 && containerHeight >= 672) {
+                    container.style.fontSize = '24px';
+                } else {
+                    container.style.fontSize = '16px';
+                }
+
+              
+                container.style.position = 'absolute';
+                container.style.width = '100%';
+                container.style.height = '100%';
+                container.style.top = '0';
+                container.style.left = '0';
+                container.style.padding = '0';
+                d=document.getElementById("nvalue").value
+                if(d=='1'){
+                    g=document.getElementById("todecide")
+                    g.href="corpus1.html"
+                    document.body.getElementsByClassName("tab-create")[0].style.cursor = "pointer";
+                    document.getElementById('createimg').style.cursor ="pointer";
+                    document.getElementById('tab-1').style.cursor ="pointer";
+                    
+                    document.getElementById('tab-1').onclick = function() {
+    // Call the function to navigate to another page
+    navigateToPage('corpus1.html');
+  };
+  document.getElementById('tab-create').style.cursor ="pointer";
+                    document.getElementById('tab-create').onclick = function() {
+    // Call the function to navigate to another page
+    navigateToPage('corpus1.html');
+  };
+                }
+                if(d=='NULL'){
+                    Swal.fire({
+      icon: 'error',
+      title: 'DataType Required',
+      text: "First select DataType to proceed.",
+      showCancelBotton:true,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {                      // <------ customClass is an object!
+        container: 'position-absolute'
+      },     
+    });
+                }
+                
+
+            },
+        });}
+        
+        function navigateToPage(pageUrl) {
+    // Redirect the user to the specified page
+    window.location.href = pageUrl;
+  }
+
+        
+        const pageAccessedByReload = (
+  (window.performance.navigation && window.performance.navigation.type === 1) ||
+    window.performance
+      .getEntriesByType('navigation')
+      .map((nav) => nav.type)
+      .includes('reload')
+);
+if(pageAccessedByReload==true){
+    window.location.href="index.html"
+}</script>
+
 </body>
+
 </html>

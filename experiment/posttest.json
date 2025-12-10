@@ -1,39 +1,52 @@
-{
-  "version": 2.0,
-  "questions": [
-    {
-      "question": "This is a Sample Question 1?",
-      "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
-      },
-      "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
-      },
-      "correctAnswer": "a",
-      "difficulty": "beginner"
+[
+  {
+    "question": "How does Naive Bayes classify a new document in text classification?",
+    "answers": {
+      "a": "By calculating the prior probability of each class",
+      "b": "By calculating the likelihood probability of each word given each class",
+      "c": "By combining the prior and likelihood probabilities using Bayes' theorem",
+      "d": "By using gradient descent to optimize the model parameters"
     },
-    {
-      "question": "This is a Sample Question 2?",
-      "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
-      },
-      "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
-      },
-      "correctAnswer": "c",
-      "difficulty": "beginner"
-    }
-  ]
-}
+    "correctAnswer": "c"
+  },
+  {
+    "question": "What is the purpose of Laplace smoothing in Naive Bayes text classification?",
+    "answers": {
+      "a": "To handle class imbalance in the dataset",
+      "b": "To handle missing values in the dataset",
+      "c": "To handle zero probabilities for unseen words",
+      "d": "To handle outliers in the dataset"
+    },
+    "correctAnswer": "c"
+  },
+  {
+    "question": "In the context of text classification using Naive Bayes, what does the term 'bag-of-words' refer to?",
+    "answers": {
+      "a": "A representation of text data as a collection of unordered words",
+      "b": "A representation of text data as a sequence of words",
+      "c": "A method for weighting words based on their frequency in documents",
+      "d": "A technique for reducing the dimensionality of text data"
+    },
+    "correctAnswer": "a"
+  },
+  {
+    "question": "Which of the following is NOT a common text classification task?",
+    "answers": {
+      "a": "Document categorization",
+      "b": "Sentiment analysis",
+      "c": "Spam email detection",
+      "d": "Image recognition"
+    },
+    "correctAnswer": "d"
+  },
+  {
+    "question": "In text classification, what is the goal?",
+    "answers": {
+      "a": "To extract information from images",
+      "b": "To categorize text documents into predefined classes or categories",
+      "c": "To perform sentiment analysis on numerical data",
+      "d": "To generate text summaries from audio files"
+    },
+    "correctAnswer": "b"
+  }
+]
