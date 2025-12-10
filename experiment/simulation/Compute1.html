@@ -1,0 +1,5411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="css/compute1.css" />
+
+</head>
+
+<body>
+    <div class="container" id="box">
+        <!-- Instructions -->
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">×</span>
+                    <h2>Instructions</h2>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <ol type="1" style="font-size: 18px; text-align: justify">                     
+                            <li>Select the testing data to predict its class, and then click the <b>ADD</b> button.</li>
+                            <li>Now, click on the <b>NEXT</b> button to initiate the training phase for the Naive Bayes model.</li>
+                            <li>Enter the occurrences of Yes(h) and No(-h) from the DATASET to calculate <span style="color:#004E86">Prior Probabilities</span>, then click <b>SUBMIT</b>.</li>
+                            <li>Click on the <b>NEXT</b> button to calculate <span style="color:#004E86">Likelihood Probabilities</span> for every word in the testing data.</li>
+                            <li>Input the  number of times the word occurs in documents labeled with the specific class(Yes), and then click the <b>SUBMIT</b> button.</li>
+                            <li>Now, follow the same procedure for class No. Now, click on <b>NEXT</b> to proceed further.</li>
+                            <b style="color:#004E86">Note: </b>If a zero probability is encountered, then apply Laplace smoothing.
+                            <li>Calculate the <span style="color:#004E86">Posterior Probability</span> by entering the required values for P(h|d₇) and click on the <b>SUBMIT</b> button.</li>
+                            <ul>
+                                <li>Click on the 'Prior Probability' tab given on the left side of the page to view the required values.</li>
+                                <li>Next, click on the 'Likelihood Probability' tab and and observe the necessary values.</li>
+                            </ul>
+                            <li>Repeat the previous step(7) to calculate the <span style="color:#004E86">Posterior Probability</span> for P(-h|d₇).</li>
+                            <li>After submitting the values, click on the <b>NEXT</b> button to access the final result.</li>
+                      </ol>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <br>
+                </div>
+            </div>
+        </div>
+
+        <!-- header -->
+        <header class="header">
+            <div class="tabs">
+                <!-- tabs -->
+                <div id="tab-1"
+                    style="display: flex; border-right: 2px solid #F5F5F5;  cursor:not-allowed;">
+                    <div class="tab-create tab-text" style="cursor:not-allowed;">
+                        DATASET
+                    </div>
+                    <img src="images/data.png" style="margin-top: 3px; margin-right: 10px; height: 85%" alt="">
+
+                </div>
+                <div id="tab-2" style="display: flex; border-right: 2px solid #F5F5F5; color: #004E86;background-color: #ffd964;font-weight: bold;cursor:not-allowed;">
+                    <div class="tab-create" style="cursor:not-allowed;">
+
+                        TRAINING
+                    </div>
+                    <img id="calimg" src="images/training-1.png"
+                        style="margin-top: 3px; margin-right: 10px; height: 85%;cursor:not-allowed;" id="calImg" alt="">
+                </div>
+                <div id="tab-3"
+                    style="display: flex; border-right: 2px solid #F5F5F5; color:#FFC000; cursor:not-allowed;">
+                    <div class="tab-create" style="cursor:not-allowed;">
+                        PREDICTION
+                    </div>
+                    <img id="anaimg" src="images/analyse.png" style="margin-top: 3px; margin-right: 10px; height: 85%" alt="">
+
+                </div>
+            </div>
+            <a class="header-text" id="myBtn" style="padding-top: 8px" href="#">INSTRUCTIONS</a>
+        </header>
+
+        <div class="sec-con-container" id="finalshow" style="display: none;">
+            <div class="sec-con-column" id="finale1"></div>
+            <div class="sec-con-table" id="finale2" style="font-size:20px"></div>
+        </div>
+        <div class="sec-con-container">
+            <div class="sec-con-column" id=finalhide>
+                <!-- controls -->
+                <div class="training-left-side-container">
+                    <div class="sub-div-control" id="training-control">
+                        <header id="trainToTest" class="header-box">DATASET</header>
+                        <div id="tablesContainer">
+                            <table id="dataPointsTable" style="height : 330px">
+                
+                                 
+                                        <tr style="background-color: #d8e9f0;">
+                                            <th>Document ID</th>
+                                            <th style="width:183px">Keywords in the document</th>
+                                            <th>Class h</th>                                
+                                        </tr>
+                                        
+                                   
+                              
+                            
+                            </table>
+                        </div>
+                        <div id="divcedshow" style="display: none;flex-direction: row; justify-content: space-around; margin-top: 5px;">
+                            <div class="warpper">
+                                <input class="radio" id="one" name="group" type="radio" onclick="addprior()">
+                                <input class="radio" id="two" name="group" type="radio" onclick="addlikelihood()">
+                            
+                          
+                                <div class="tabuler">
+                                    <label class="tab" id="one-tab" for="one">PRIOR PROBABILITY</label>
+                                    <label class="tab" id="two-tab" for="two">LIKELIHOOD PROBABILITY</label>
+                
+                                </div>
+                            </div>
+                        </div>
+                        <div id="divcshow" style="display: none; align-items: center; justify-content: center; height: 297px; margin:0 auto; flex-direction: column;"></div>
+
+                        
+                        <!-- <div class="control-panel">
+                        </div> -->
+                    </div>
+                    <div class="sub-div-formula">
+                        <header class="header-box" style="position: sticky;  top: 0">FORMULAE</header>
+                        <div style="display: flex; flex-direction: row;">
+                            
+                            <div class="warpper2" style="display: flex; flex-direction: column;   height: 160px; overflow-y:scroll;overflow-x: hidden; text-align: center;width: 20%;">
+                                <input   class="radio" id="seven" name="group" type="radio" onclick="priorf()">
+                                <input class="radio" id="four" name="group" type="radio" onclick="like()">
+                                <input class="radio" id="five" name="group" type="radio" onclick="Smoothlike()">
+                                <input class="radio" id="three" name="group" type="radio" onclick="naivebayes()">
+                            
+                            <div class="tabuler2">
+                                <label class="tab2" id="seven-tab" for="seven" style="width: 70%; margin-top: 2px;">Prior Probability</label>
+                                <label class="tab2" id="four-tab" for="four" style="width:70%;;margin-top: 2px;">Likelihood Probability</label>
+                                <label class="tab2" id="five-tab" for="five" style="width:70%;;margin-top: 2px;">Smoothed Likelihood Probability</label>
+                                <label class="tab2" id="three-tab" for="three" style="width: 70%;;margin-top: 2px;">Bayes Theorem</label>
+                            
+                        </div>
+                    </div>
+                            <div id="forformule" style="display: flex; align-items: center; justify-content: center; margin:0 auto; height: 160px; flex-direction: column;width: 80%;">
+                               
+
+                            </div>
+                  
+                        </div>
+                    </diV>
+                    
+                </div>
+            </div>
+
+            <!-- table -->
+            <div class="sec-con-table" id=finalhide2>
+                <div class="sub-div-table" id="fortarget">
+                    <header id=calculation class="header-box">PRIOR PROBABILITY</header>
+                    <div id="divte" style="display: none;font-size: larger;"></div>
+                    <div id="firsttable" style=" height: fit-content; position: relative; margin-top: 125px; font-size: larger;margin-left:10px">
+                        <div id=fidel style="position: absolute; top: -100px; margin-left: 120px;"></div>
+                        <div id=addind style="margin-left: 160px; width: 200px;">
+                            <b>P(h) = </b>
+                            <math style="font-weight: bold; font-size: 25px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input max="6" min="0" type="number" id=addin style="width: 50px;text-align: center; " /></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">6</mi>
+                    
+                    
+                                </mfrac>
+                    
+                            </math>
+                        
+                        
+                        </div>
+                        <div id=negind style="margin-left: 160px; margin-top: 20px; width: 220px;">
+                            <b>P(-h) = </b>
+                            <math style="font-weight: bold; font-size: 25px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input max="6" min="0" type="number" id=negin style="width: 50px; text-align: center;"/></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">6</mi>
+                    
+                    
+                                </mfrac>
+                    
+                            </math>
+                            </div>
+
+                        
+                </div>
+                <table id="secondtable" style="display:  none;">
+                    <tr>
+                        <td rowspan="2"><b>S.No</b></td>
+                        <td rowspan="2" ><b>FEATURES</b></td>
+                        <td colspan="2"><b>CLASS</b>
+                            <tr>
+                                <td><b>YES (h)</b></td>
+                                <td><b>NO (-h)<b></td>
+                            </tr>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td id >Love</td>
+                        <td id= addinc1 class="yes">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin1 max="10" min="0" type="number" style="width: 30px; text-align: center;"></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">19</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                            </td>
+
+                        <td id="neginc1" class="no">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin1" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">9</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Pain</td>
+                        <td id= addinc2 class="yes">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin2 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td id="neginc2" class="no">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin2" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Joy</td>
+                        <td id= addinc3 class="yes">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin3 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td id="neginc3" class="no">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn> <input id="negin3" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled> </mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Kick</td>
+
+                        <td id= addinc4 class="yes">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id= addin4 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+
+                        <td id="neginc4" class="no">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id="negin4" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                            
+                             </td>
+                    </tr>
+                   
+                </table>
+
+                <table id="secondtable2" style="display:  none;">
+                    <tr>
+                        <td rowspan="2"><b>S.No</b></td>
+                        <td rowspan="2" ><b>FEATURES</b></td>
+                        <td colspan="2"><b>CLASS</b>
+                            <tr>
+                                <td><b>YES (h)</b></td>
+                                <td><b>NO (-h)<b></td>
+                            </tr>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Good</td>
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin21 max="10" min="0" type="number" style="width: 30px; text-align: center;"></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">19</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                            </td>
+
+                        <td  class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin21" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">9</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Love</td>
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin22 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin22" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Kick</td>
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin23 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn> <input id="negin23" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled> </mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Joy</td>
+
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id= addin24 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+
+                        <td class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id="negin24" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                            
+                             </td>
+                    </tr>
+                   
+                </table>
+
+                <table id="secondtable3" style="display:  none;">
+                    <tr>
+                        <td rowspan="2"><b>S.No</b></td>
+                        <td rowspan="2" ><b>FEATURES</b></td>
+                        <td colspan="2"><b>CLASS</b>
+                            <tr>
+                                <td><b>YES (h)</b></td>
+                                <td><b>NO (-h)<b></td>
+                            </tr>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Pain</td>
+                        <td class="yes3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin31 max="10" min="0" type="number" style="width: 30px; text-align: center;"></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">19</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                            </td>
+
+                        <td  class="no3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin31" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">9</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Kick</td>
+                        <td class="yes3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin32 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td class="no3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin32" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Joy</td>
+                        <td class="yes3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin33 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td class="no3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn> <input id="negin33" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled> </mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Love</td>
+
+                        <td class="yes3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id= addin34 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+
+                        <td class="no3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id="negin34" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                            
+                             </td>
+                    </tr>
+                   
+                </table>
+
+                </div>
+
+                <div id="hidediv1" style="position:absolute;bottom: 50px; right: 50px; display: flex; justify-content: space-between; flex-direction: column; height: 180px;">
+                <div><button id=submittotable class="button" onclick="tosubmitprior()">SUBMIT</button></div>
+                <div><button disabled id=nexttotable class="button" onclick="tonextFrq()">NEXT</button></div>
+                <div><button id=resettable class="button" onclick="toreset()">RESET</button></div>
+            </div> 
+
+            <div id="showdiv1" style="position:absolute;bottom: 50px; right: 50px; display: none; justify-content: space-between; flex-direction: column; height: 180px;">
+                <div><button id=submitFreq class="button" onclick="tosubmitFrq()">SUBMIT</button></div>
+                <div><button class="button" id="reset" onclick="toreset_occurance()">RESET</button></div>
+                <div><button id="nextbt" disabled=true class="button">NEXT</button></div>
+            </div>
+
+        </div> <div id =retb style="position:absolute;bottom: 50px; right: 177px; display: none;">
+            <button id=print class="button" onclick="window.print()">PRINT</button></div>
+    </div>
+    
+
+        <!-- footer -->
+        <footer class="footer">
+            <span class="footer-text">© 2025 Virtual Labs, IIT Roorkee</span>
+        </footer>
+    </div>
+        <script>
+
+       let target_dict,new_instance_yes,new_instance_no;
+       let forYes=0
+       let forNo=-1
+       var serializedData = localStorage.getItem('objectToPass'); // Retrieve the serialized table data from localStorage
+       var tableData = JSON.parse(serializedData);
+       var table = document.getElementById('dataPointsTable');
+
+let item1="Love ,"
+let item2="Pain ,"
+let item3="Joy ,"
+let item4="Kick ,"
+
+//feature counts for yes
+let for11=5;//love
+let for21=1;//pain
+let for31=5;//joy
+let for41=1;//kick
+
+//feature counts for no
+let for12=2;//love
+let for22=4;//pain
+let for32=1;//joy
+let for42=2;//kick
+
+//for 2nd example
+let item21="Good ,"
+let item22="Love ,"
+let item23="Kick ,"
+let item24="Joy ,"
+
+//feature counts for yes
+let for2_11=1;//good
+let for2_21=5;//love
+let for2_31=1;//kick
+let for2_41=5;//joy
+
+//feature counts for no
+let for2_12=0;//good
+let for2_22=2;//love
+let for2_32=2;//kick
+let for2_42=1;//joy
+
+
+//for 3rd example
+let item31="Pain ,"
+let item32="Kick ,"
+let item33="Joy ,"
+let item34="Love ,"
+
+//feature counts for yes
+let for3_11=1;//pain
+let for3_21=1;//kick
+let for3_31=5;//joy
+let for3_41=5;//love
+
+//feature counts for no
+let for3_12=4;//pain
+let for3_22=2;//kick
+let for3_32=1;//joy
+let for3_42=2;//love
+
+
+let countin=1
+
+let likelihood=[];
+let ConditionalCount = 0;
+let tyre=0;
+
+let uncheck3=document.getElementById("three")
+let uncheck4=document.getElementById("four")
+let uncheck5=document.getElementById("five")
+let uncheck7=document.getElementById("seven")
+
+// Reconstruct the table by iterating through the tableData array
+console.log(tableData.length)
+for (var i = 0; i < tableData.length; i++) {
+  var rowData = tableData[i];
+  if(rowData[2]=="Yes"){
+  var row = table.insertRow(1);
+  row.classList.add("tocheck")
+  forYes=forYes+1
+  }
+  else{ 
+    var row = table.insertRow(-1);
+    row.classList.add("tocheck")
+    forNo=forNo+1
+  }
+  // Iterate through each property of the row data object
+  row[0]=i
+
+  for (var columnName in rowData) {
+    var cell = row.insertCell();
+
+    cell.textContent = rowData[columnName];
+  }
+}
+var rl = document.getElementsByClassName('tocheck');
+rl[6].style.backgroundColor="rgb(255 230 154)"
+rl[6].style.color="black"
+rl[6].style.fontWeight="bold"
+rl[6].id="TOBOLD"
+
+for(let i=0;i<rl.length;i++){
+    rl[i].cells[0].innerHTML=i+1
+}
+
+let addlike = 0;
+
+   
+    let tdcontainer=document.getElementById("TOBOLD")
+    let rowii = tdcontainer.getElementsByTagName('td')
+    target_dict=[rowii[1].innerText]
+
+    console.log(target_dict)
+
+//find prior prob
+
+function tosubmitprior(){
+    count=0
+    c=''
+    a=true;
+    let temp=parseInt(document.getElementById("addin").value)
+    let temp2=parseInt(document.getElementById("negin").value)
+    let temp_1=document.getElementById("addin")
+    let temp_2=document.getElementById("negin")
+    if(isNaN(temp)==false && isNaN(temp2)==false){
+    if(temp==forYes && temp2==forNo){
+        if (forYes==0){
+    forYes=0.00000000001
+}
+if (forNo==0){
+    forNo=0.00000000001
+}
+
+            let temp3= document.getElementById("addind")
+            temp3.innerHTML= '<b>'+(temp3.innerText).slice(0,7)+'</b>'+(forYes/6).toFixed(2)
+           
+            let temp4= document.getElementById("negind")
+            temp4.innerHTML= '<b>'+(temp4.innerText).slice(0,8)+'</b>'+(forNo/6).toFixed(2)
+            
+            document.getElementById("nexttotable").disabled=false
+            document.getElementById("submittotable").disabled=true
+
+            let temp7= document.getElementById("resettable")
+            temp7.onclick=function(){toreset_prior()}
+
+            
+    }
+
+    //for incorrect values
+    else{
+    let countyn =0;
+    let c=''
+    let g =''
+    if (temp!=forYes){
+        c=c+"h "
+        temp_1.style.border="2px solid red"
+        countyn=countyn+1
+    }
+    else{
+        temp_1.style.border=""
+    }
+    if (temp2!=forNo){
+        c=c+"-h "
+        temp_2.style.border="2px solid red"
+        countyn=countyn+1
+    }
+    else{
+        temp_2.style.border=""
+    }
+    if(countyn==1){
+        c="Value entered in "+c+"field is incorrect."
+        g='INCORRECT VALUE'
+    }
+    if(countyn==2){
+        c="Values entered in both the fields are incorrect."
+        g='INCORRECT VALUES'
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      showCancelBotton:true,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },    
+    });
+return;
+    }
+}
+//for missing values
+else{
+    let countyn =0;
+    let c=''
+    let e=''
+    if (isNaN(temp)==true){
+        c=c+"h "
+        temp_1.style.border="2px solid red"
+        countyn=countyn+1
+    }
+    else{
+        temp_1.style.border=""
+    }
+    if (isNaN(temp2)==true){
+        c=c+"-h "
+        temp_2.style.border="2px solid red"
+        countyn=countyn+1
+    }
+    else{
+        temp_2.style.border=''
+    }
+    if(countyn==1){
+        c="Enter a value in "+c+"field."
+        e="MISSING VALUE"
+    }
+    if(countyn==2){
+        c="Enter the values in both the fields. "
+        e="MISSING VALUES"
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: e,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },    
+    });
+return;
+    }
+
+    Swal.fire({
+  icon: 'success',
+  html: 'Click on the <b style="color:#004E86">NEXT</b> button.',
+  showCancelBotton:true,
+  allowOutsideClick: false,
+  target: '.container',
+  customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },   
+});
+
+}
+
+function toreset_prior(){
+    temp=document.getElementById("firsttable")
+    temp.innerHTML=`<div id=fidel style="position: absolute; top: -100px; margin-left: 120px;"></div>
+    <div id=addind style="margin-left: 120px; width: 200px;"><b>P(h)</b> = 
+        <math style="font-weight: bold; font-size: 25px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input max="6" min="0" type="number" id=addin style="width: 50px;text-align: center; " /></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">6</mi>
+                    
+                    
+                                </mfrac>
+                    
+                            </math>
+        
+        </div>
+                        <div id=negind style="margin-left: 120px; margin-top: 20px; width: 220px;"> <b>P(-h)</b> = 
+                            <math style="font-weight: bold; font-size: 25px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input max="6" min="0" type="number" id=negin style="width: 50px;text-align: center; "/></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">6</mi>
+                    
+                    
+                                </mfrac>
+                    
+                            </math>
+                     </div>
+`
+let temp7= document.getElementById("resettable")
+    temp7.onclick=function(){ toreset()}
+    let temp6= document.getElementById("submittotable")
+    temp6.disabled=false
+    temp6.style.cursor="pointer"
+    let temp5= document.getElementById("nexttotable")
+            temp5.disabled=true
+            temp5.style.cursor="not-allowed"
+            let temp3= document.getElementById("forformule")
+
+uncheck3.checked=false
+uncheck4.checked=false
+uncheck7.checked=false
+uncheck5.checked=false
+    temp3.innerHTML=""
+}       
+
+//prior to likelihood
+function tonextFrq(){
+
+    document.getElementById("calculation").innerHTML="FREQUENCY TABLE";
+    document.getElementById("nexttotable").disabled=true;
+    document.getElementById("firsttable").style.display="none";
+    document.getElementById('fidel').style.display="none";
+    
+    document.getElementById("hidediv1").style.display="none";
+    document.getElementById("showdiv1").style.display="flex";
+
+    if(target_dict[0]=='Love Pain Joy Love Kick')
+    {
+        document.getElementById("secondtable").style.display="";
+    }
+    else if(target_dict[0]=='Good Love Kick Joy')
+    {
+        document.getElementById("secondtable2").style.display="";
+    }
+    else if(target_dict[0]=='Pain Kick Joy Love')
+    {
+        document.getElementById("secondtable3").style.display="";
+    }
+}
+
+
+//find frequency (likelihood)
+let countLaplace=0;
+
+function tosubmitFrq(){
+    count=0
+    let c=''
+    
+    a=true;
+    let countnu=0
+    
+    if(target_dict[0]=='Love Pain Joy Love Kick')
+    {
+        
+            for(let i=1;i<5;i++){
+        let temp= parseInt(document.getElementById("addin"+i).value)
+        let temp2 = document.getElementById("addin"+i)
+        if(isNaN(temp)==true  && temp2.disabled==false){
+               countnu=countnu+1;
+            
+               c=c+eval('item'+i)
+               
+            temp2.style.border="2px solid red"
+            a=false
+            }
+            else{
+            
+            temp2.style.border = "thin solid black"
+
+        }
+        
+    
+
+    }
+    for(let i=1;i<5;i++){
+        if (countnu>0){
+                break
+        }
+        
+        let temp= parseInt(document.getElementById("addin"+i).value)
+        let temp2 = document.getElementById("addin"+i)
+        console.log("for"+i+"1");
+        console.log(typeof(for11));
+        console.log(typeof(temp));
+        if(temp!= eval("for"+i+"1") && temp2.disabled==false && countnu==0)
+        {
+            let temp2= document.getElementById("addin"+i)
+            temp2.style.border = "2px solid red"
+            a=false
+                count=count+1
+                c=c+eval('item'+i)
+               
+               
+            
+        }
+        else{
+            let temp2= document.getElementById("addin"+i)
+            temp2.style.border = "thin solid black"
+
+        }
+    }
+   
+    
+    if (a==true){
+        
+        temp3=document.getElementsByClassName("yes")
+        for(let i=0;i<4;i++){
+            
+            let toenable= document.getElementById("negin"+(i+1))
+        toenable.disabled=false
+        toenable.style.cursor="pointer"
+     
+            let temp= parseInt(document.getElementById("addin"+(i+1)).value)
+            temp3[i].innerHTML=(eval("for"+(1+i)+"1")/19).toFixed(3)
+               likelihood.push((eval("for"+(1+i)+"1")/19).toFixed(3))                        
+    }
+    let changeonclick=document.getElementById("submitFreq")
+    changeonclick.onclick=function(){tosubmitFrq2()}
+    let temp7= document.getElementById("resettable")
+    temp7.onclick=function(){ toreset2()}
+    
+
+}
+
+    else{
+        
+        tempa = c.split(" ,");
+        tempa.pop()
+        c=''
+        let g=""
+        if(count>countnu){
+        if(count==1){
+        c=tempa[0] 
+        
+        c=`Enter correct value in `+c+" field."
+        g="INCORRECT VALUE!"
+    }
+    if(count>1 && count<=3){
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter correct values in `+c+" fields."
+        g="INCORRECT VALUES!"
+    }
+    if(count==4){
+      c=`Enter correct values in all the fields.`
+      g="INCORRECT VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+}
+if(countnu>count){
+    console.log(countnu)
+    if(countnu==1){
+        console.log(countnu)
+    console.log(tempa)
+    c=tempa[0] 
+        c=`Enter value in `+c+' field.'
+        g="MISSING VALUE!"
+    }
+    if(countnu>1 && countnu<=3){
+      6 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter values in `+c+" fields."
+        g="MISSING VALUES!"
+    }
+    if(countnu==4){
+      c=`Enter values in all the fields.`
+      g="MISSING VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },    
+    });
+
+}
+    }
+          
+        }
+            
+    
+    else if(target_dict[0]=='Good Love Kick Joy')
+{
+
+    if(countLaplace==0)
+    {
+        for(let i=1;i<5;i++){
+        let temp= parseInt(document.getElementById("addin2"+i).value)
+        let temp2 = document.getElementById("addin2"+i)
+        if(isNaN(temp)==true  && temp2.disabled==false){
+               countnu=countnu+1;
+            
+               c=c+eval('item2'+i)
+               
+            temp2.style.border="2px solid red"
+            a=false
+            }
+            else{
+            
+            temp2.style.border = "thin solid black"
+
+        }
+        
+    
+
+    }
+    for(let i=1;i<5;i++){
+        if (countnu>0){
+                break
+        }
+        
+        let temp= parseInt(document.getElementById("addin2"+i).value)
+        let temp2 = document.getElementById("addin2"+i)
+
+
+        if(temp!= eval("for2_"+i+"1") && temp2.disabled==false && countnu==0)
+        {
+            let temp2= document.getElementById("addin2"+i)
+            temp2.style.border = "2px solid red"
+            a=false
+                count=count+1
+                c=c+eval('item2'+i)
+               
+               
+            
+        }
+        else{
+            let temp2= document.getElementById("addin2"+i)
+            temp2.style.border = "thin solid black"
+
+        }
+    }
+   
+    
+    if (a==true){
+        
+        temp3=document.getElementsByClassName("yes2")
+        for(let i=0;i<4;i++){
+            
+            let toenable= document.getElementById("negin2"+(i+1))
+        toenable.disabled=false
+        toenable.style.cursor="pointer"
+     
+            let temp= parseInt(document.getElementById("addin2"+(i+1)).value)
+            temp3[i].innerHTML=(eval("for2_"+(1+i)+"1")/19).toFixed(3)
+               likelihood.push((eval("for2_"+(1+i)+"1")/19).toFixed(3))        
+               console.log('checkkkk')                
+    }
+    let changeonclick=document.getElementById("submitFreq")
+    changeonclick.onclick=function(){tosubmitFrq2()}
+    let temp7= document.getElementById("resettable")
+    temp7.onclick=function(){ toreset2()}
+    
+
+}
+
+    else{
+        
+        tempa = c.split(" ,");
+        tempa.pop()
+        c=''
+        let g=""
+        if(count>countnu){
+        if(count==1){
+        c=tempa[0] 
+        
+        c=`Enter correct value in `+c+" field."
+        g="INCORRECT VALUE!"
+    }
+    if(count>1 && count<=3){
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter correct values in `+c+" fields."
+        g="INCORRECT VALUES!"
+    }
+    if(count==4){
+      c=`Enter correct values in all the fields.`
+      g="INCORRECT VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+}
+if(countnu>count){
+    console.log(countnu)
+    if(countnu==1){
+        console.log(countnu)
+    console.log(tempa)
+    c=tempa[0] 
+        c=`Enter value in `+c+' field.'
+        g="MISSING VALUE!"
+    }
+    if(countnu>1 && countnu<=3){
+      6 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter values in `+c+" fields."
+        g="MISSING VALUES!"
+    }
+    if(countnu==4){
+      c=`Enter values in all the fields.`
+      g="MISSING VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },    
+    });
+
+}
+    }
+         
+    }
+    
+    else if(countLaplace==1)
+    {
+        for(let i=1;i<5;i++){
+        let temp= parseInt(document.getElementById("addin2"+i).value)
+        let temp2 = document.getElementById("addin2"+i)
+        if(isNaN(temp)==true  && temp2.disabled==false){
+               countnu=countnu+1;
+            
+               c=c+eval('item2'+i)
+               
+            temp2.style.border="2px solid red"
+            a=false
+            }
+            else{
+            
+            temp2.style.border = "thin solid black"
+
+        }
+        
+    
+
+    }
+    for(let i=1;i<5;i++){
+        if (countnu>0){
+                break
+        }
+        
+        let temp= parseInt(document.getElementById("addin2"+i).value)
+        let temp2 = document.getElementById("addin2"+i)
+
+
+        if(temp!= (eval("for2_"+i+"1")+1) && temp2.disabled==false && countnu==0)
+        {
+            let temp2= document.getElementById("addin2"+i)
+            temp2.style.border = "2px solid red"
+            a=false
+                count=count+1
+                c=c+eval('item2'+i)
+               
+               
+            
+        }
+        else{
+            let temp2= document.getElementById("addin2"+i)
+            temp2.style.border = "thin solid black"
+
+        }
+    }
+   
+    
+    if (a==true){
+        
+        temp3=document.getElementsByClassName("yes2")
+        for(let i=0;i<4;i++){
+            
+            let toenable= document.getElementById("negin2"+(i+1))
+        toenable.disabled=false
+        toenable.style.cursor="pointer"
+     
+            let temp= parseInt(document.getElementById("addin2"+(i+1)).value)
+            temp3[i].innerHTML=((eval("for2_"+(1+i)+"1")+1)/(19+7)).toFixed(3)
+            likelihood.push(((eval("for2_"+(1+i)+"1")+1)/(19+7)).toFixed(3))        
+                 
+    }
+    let changeonclick=document.getElementById("submitFreq")
+    changeonclick.onclick=function(){tosubmitFrq2()}
+    let temp7= document.getElementById("resettable")
+    temp7.onclick=function(){ toreset2()}
+    
+
+}
+
+    else{
+        
+        tempa = c.split(" ,");
+        tempa.pop()
+        c=''
+        let g=""
+        if(count>countnu){
+        if(count==1){
+        c=tempa[0] 
+        
+        c=`Enter correct value in `+c+" field."
+        g="INCORRECT VALUE!"
+    }
+    if(count>1 && count<=3){
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter correct values in `+c+" fields."
+        g="INCORRECT VALUES!"
+    }
+    if(count==4){
+      c=`Enter correct values in all the fields.`
+      g="INCORRECT VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+}
+if(countnu>count){
+    console.log(countnu)
+    if(countnu==1){
+        console.log(countnu)
+    console.log(tempa)
+    c=tempa[0] 
+        c=`Enter value in `+c+' field.'
+        g="MISSING VALUE!"
+    }
+    if(countnu>1 && countnu<=3){
+      6 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter values in `+c+" fields."
+        g="MISSING VALUES!"
+    }
+    if(countnu==4){
+      c=`Enter values in all the fields.`
+      g="MISSING VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },    
+    });
+
+}
+    }
+         
+    }
+}
+
+    else if(target_dict[0]=='Pain Kick Joy Love')
+    {
+       
+        for(let i=1;i<5;i++){
+        let temp= parseInt(document.getElementById("addin3"+i).value)
+        let temp2 = document.getElementById("addin3"+i)
+        if(isNaN(temp)==true  && temp2.disabled==false){
+               countnu=countnu+1;
+            
+               c=c+eval('item3'+i)
+               
+            temp2.style.border="2px solid red"
+            a=false
+            }
+            else{
+            
+            temp2.style.border = "thin solid black"
+        }        
+    }
+
+    for(let i=1;i<5;i++){
+        if (countnu>0){
+                break
+        }
+        
+        let temp= parseInt(document.getElementById("addin3"+i).value)
+        let temp2 = document.getElementById("addin3"+i)
+
+
+        if(temp!= eval("for3_"+i+"1") && temp2.disabled==false && countnu==0)
+        {
+            let temp2= document.getElementById("addin3"+i)
+            temp2.style.border = "2px solid red"
+            a=false
+                count=count+1
+                c=c+eval('item3'+i)            
+        }
+        else{
+            let temp2= document.getElementById("addin3"+i)
+            temp2.style.border = "thin solid black"
+        }
+    }
+   
+    
+    if (a==true){
+        
+        temp3=document.getElementsByClassName("yes3")
+        for(let i=0;i<4;i++){
+            
+        let toenable= document.getElementById("negin3"+(i+1))
+        toenable.disabled=false
+        toenable.style.cursor="pointer"
+     
+            let temp= parseInt(document.getElementById("addin3"+(i+1)).value)
+            temp3[i].innerHTML=(eval("for3_"+(1+i)+"1")/19).toFixed(3)
+            likelihood.push((eval("for3_"+(1+i)+"1")/19).toFixed(3))        
+                    
+    }
+    let changeonclick=document.getElementById("submitFreq")
+    changeonclick.onclick=function(){tosubmitFrq2()}
+    let temp7= document.getElementById("resettable")
+    temp7.onclick=function(){ toreset2()}
+    
+
+}
+
+    else{
+        
+        tempa = c.split(" ,");
+        tempa.pop()
+        c=''
+        let g=""
+        if(count>countnu){
+        if(count==1){
+        c=tempa[0] 
+        
+        c=`Enter correct value in `+c+" field."
+        g="INCORRECT VALUE!"
+    }
+    if(count>1 && count<=3){
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter correct values in `+c+" fields."
+        g="INCORRECT VALUES!"
+    }
+    if(count==4){
+      c=`Enter correct values in all the fields.`
+      g="INCORRECT VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+}
+if(countnu>count){
+    console.log(countnu)
+    if(countnu==1){
+        console.log(countnu)
+    console.log(tempa)
+    c=tempa[0] 
+        c=`Enter value in `+c+' field.'
+        g="MISSING VALUE!"
+    }
+    if(countnu>1 && countnu<=3){
+      6 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter values in `+c+" fields."
+        g="MISSING VALUES!"
+    }
+    if(countnu==4){
+      c=`Enter values in all the fields.`
+      g="MISSING VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },    
+    });
+
+}
+    }
+         
+
+    
+   
+    }
+}
+
+
+function tosubmitFrq2(){
+    let count=0
+    let c=''
+    
+    let a=true;
+    let countnu=0
+    if(target_dict[0]=='Love Pain Joy Love Kick')
+    {
+        for(let i=1;i<5;i++){
+        let temp= parseInt(document.getElementById("negin"+i).value)
+        let temp2 = document.getElementById("negin"+i)
+        if(isNaN(temp) && temp2.disabled==false){
+            temp2.style.border = "2px solid red"
+            a=false
+                countnu=countnu+1
+                c=c+eval('item'+i)
+        }
+        else{
+            temp2.style.border = "thin solid black"
+        }
+    
+    }
+
+    for(let i=1;i<5;i++){
+        if (countnu>0){
+                break
+        }
+        let temp= parseInt(document.getElementById("negin"+i).value)
+        let temp2 = document.getElementById("negin"+i)
+        
+        if(temp!= eval("for"+i+"2") && temp2.disabled==false && countnu==0)
+        {
+            let temp2= document.getElementById("negin"+i)
+            temp2.style.border = "2px solid red"
+            a=false
+            c=c+eval('item'+i)
+            count=count+1
+        }
+        else{
+            let temp2= document.getElementById("negin"+i)
+            temp2.style.border = "thin solid black"
+
+        }
+    }
+    if (a==true){
+        
+        temp3=document.getElementsByClassName("no")
+        for(let i=0;i<4;i++){
+            let temp= parseInt(document.getElementById("negin"+(i+1)).value)
+            temp3[i].innerHTML=(eval("for"+(1+i)+"2")/9).toFixed(3)
+            likelihood.push((eval("for"+(1+i)+"2")/9).toFixed(3))  
+    }
+
+    let changeonclick=document.getElementById("submitFreq")
+    changeonclick.onclick=''
+    let temp6= document.getElementById("submitFreq")
+            temp6.disabled=true
+            temp6.style.cursor="not-allowed"
+            d=document.getElementById("nextbt")
+            d.disabled=false
+            d.style.cursor="pointer"
+            Swal.fire({
+  icon: 'success',
+  html: 'Click on the <b style="color:#004E86">NEXT</b> button.',
+  showCancelBotton:true,
+  allowOutsideClick: false,
+  target: '.container',
+  customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+});
+            d.onclick=function(){tonextConditional()}
+            
+}
+
+else{
+    let g=''
+        if(count>countnu){
+        if(count==1){
+            tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c=  `Enter correct value in `+c+" field."
+        g="INCORRECT VALUE!"
+    }
+    
+    if(count>1 && count<=3){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter correct values in `+c+" fields."
+        g="INCORRECT VALUES!"
+    }
+    if(count==4){
+      c=`Enter correct values in all the fields.`
+      g="INCORRECT VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+}
+if(countnu>count){
+    let g=''
+    if(countnu==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c=`Enter value in `+c+' field.'
+        g="MISSING VALUE!"
+    }
+    
+    if(countnu>1 && countnu<=3){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter values in `+c+" fields."
+        g="MISSING VALUES!"
+    }
+    if(countnu==4){
+      c=`Enter values in all the fields.`
+      g="MISSING VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },   
+    });
+
+}
+    }
+
+    }
+    
+    else if(target_dict[0]=='Good Love Kick Joy')
+    {
+        if(countLaplace==0)
+        {
+            for(let i=1;i<5;i++){
+        let temp= parseInt(document.getElementById("negin2"+i).value)
+        let temp2 = document.getElementById("negin2"+i)
+        if(isNaN(temp) && temp2.disabled==false){
+            temp2.style.border = "2px solid red"
+            a=false
+                countnu=countnu+1
+                c=c+eval('item2'+i)
+            
+        }
+        else{
+            temp2.style.border = "thin solid black"
+
+        }
+    
+    }
+
+    for(let i=1;i<5;i++){
+        if (countnu>0){
+                break
+        }
+        let temp= parseInt(document.getElementById("negin2"+i).value)
+        let temp2 = document.getElementById("negin2"+i)
+        
+        if(temp!= eval("for2_"+i+"2") && temp2.disabled==false && countnu==0)
+        {
+            let temp2= document.getElementById("negin2"+i)
+            temp2.style.border = "2px solid red"
+            a=false
+            c=c+eval('item2'+i)
+            count=count+1
+        }
+        else{
+            let temp2= document.getElementById("negin2"+i)
+            temp2.style.border = "thin solid black"
+
+        }
+    }
+    if (a==true){
+        
+        temp3=document.getElementsByClassName("no2")
+        for(let i=0;i<4;i++){
+            let temp= parseInt(document.getElementById("negin2"+(i+1)).value)
+            temp3[i].innerHTML=(eval("for2_"+(1+i)+"2")/9).toFixed(3)
+            likelihood.push((eval("for2_"+(1+i)+"2")/9).toFixed(3))  
+    }
+
+    let changeonclick=document.getElementById("submitFreq")
+    changeonclick.onclick=function(){tosubmitFrq()}
+   
+
+           Swal.fire({
+      title:'Apply laplace smoothing!',
+      html: "\'Good\' is not present in the training data for a <b>NO</b> class.",
+      icon: "warning",
+    
+      showCancelBotton:true,
+  allowOutsideClick: false,
+  target: '.container',
+  customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },  
+    }).then((result) => {
+      if (result.isConfirmed) {
+        tonextLaplace()
+      }
+    });
+
+
+}
+
+else{
+    let g=''
+        if(count>countnu){
+        if(count==1){
+            tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c=  `Enter correct value in `+c+" field."
+        g="INCORRECT VALUE!"
+    }
+    
+    if(count>1 && count<=3){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter correct values in `+c+" fields."
+        g="INCORRECT VALUES!"
+    }
+    if(count==4){
+      c=`Enter correct values in all the fields.`
+      g="INCORRECT VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+}
+if(countnu>count){
+    let g=''
+    if(countnu==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c=`Enter value in `+c+' field.'
+        g="MISSING VALUE!"
+    }
+    
+    if(countnu>1 && countnu<=3){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter values in `+c+" fields."
+        g="MISSING VALUES!"
+    }
+    if(countnu==4){
+      c=`Enter values in all the fields.`
+      g="MISSING VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },   
+    });
+
+}
+    }
+
+        }
+        else if(countLaplace==1)
+        {
+            for(let i=1;i<5;i++){
+        let temp= parseInt(document.getElementById("negin2"+i).value)
+        let temp2 = document.getElementById("negin2"+i)
+        if(isNaN(temp) && temp2.disabled==false){
+            temp2.style.border = "2px solid red"
+            a=false
+                countnu=countnu+1
+                c=c+eval('item2'+i)
+            
+        }
+        else{
+            temp2.style.border = "thin solid black"
+
+        }
+    
+    }
+
+    for(let i=1;i<5;i++){
+        if (countnu>0){
+                break
+        }
+        let temp= parseInt(document.getElementById("negin2"+i).value)
+        let temp2 = document.getElementById("negin2"+i)
+        
+        if(temp!= (eval("for2_"+i+"2")+1) && temp2.disabled==false && countnu==0)
+        {
+            let temp2= document.getElementById("negin2"+i)
+            temp2.style.border = "2px solid red"
+            a=false
+            c=c+eval('item2'+i)
+            count=count+1
+        }
+        else{
+            let temp2= document.getElementById("negin2"+i)
+            temp2.style.border = "thin solid black"
+
+        }
+    }
+    if (a==true){
+        
+        temp3=document.getElementsByClassName("no2")
+        for(let i=0;i<4;i++){
+            let temp= parseInt(document.getElementById("negin2"+(i+1)).value)
+            temp3[i].innerHTML=((eval("for2_"+(1+i)+"2")+1)/(9+7)).toFixed(3)
+            likelihood.push(((eval("for2_"+(1+i)+"2")+1)/(9+7)).toFixed(3))  
+    }
+
+    let changeonclick=document.getElementById("submitFreq")
+    changeonclick.onclick=''
+    let temp6= document.getElementById("submitFreq")
+            temp6.disabled=true
+            temp6.style.cursor="not-allowed"
+
+
+            d=document.getElementById("nextbt")
+            d.disabled=false
+            d.style.cursor="pointer"
+
+
+
+            Swal.fire({
+  icon: 'success',
+  html:'Now, click on the <b>NEXT</b> button.',
+
+  showCancelBotton:true,
+  allowOutsideClick: false,
+  target: '.container',
+  customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+});
+            d.onclick=function(){tonextConditional()}
+           
+}
+
+else{
+    let g=''
+        if(count>countnu){
+        if(count==1){
+            tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c=  `Enter correct value in `+c+" field."
+        g="INCORRECT VALUE!"
+    }
+    
+    if(count>1 && count<=3){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter correct values in `+c+" fields."
+        g="INCORRECT VALUES!"
+    }
+    if(count==4){
+      c=`Enter correct values in all the fields.`
+      g="INCORRECT VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+}
+if(countnu>count){
+    let g=''
+    if(countnu==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c=`Enter value in `+c+' field.'
+        g="MISSING VALUE!"
+    }
+    
+    if(countnu>1 && countnu<=3){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter values in `+c+" fields."
+        g="MISSING VALUES!"
+    }
+    if(countnu==4){
+      c=`Enter values in all the fields.`
+      g="MISSING VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },   
+    });
+
+}
+    }
+
+        }
+       
+    }
+
+    else if(target_dict[0]=='Pain Kick Joy Love')
+    {
+        for(let i=1;i<5;i++){
+        let temp= parseInt(document.getElementById("negin3"+i).value)
+        let temp2 = document.getElementById("negin3"+i)
+        if(isNaN(temp) && temp2.disabled==false){
+            temp2.style.border = "2px solid red"
+            a=false
+                countnu=countnu+1
+                c=c+eval('item2'+i)
+            
+        }
+        else{
+            temp2.style.border = "thin solid black"
+
+        }
+    
+    }
+
+    for(let i=1;i<5;i++){
+        if (countnu>0){
+                break
+        }
+        let temp= parseInt(document.getElementById("negin3"+i).value)
+        let temp2 = document.getElementById("negin3"+i)
+        
+        if(temp!= eval("for3_"+i+"2") && temp2.disabled==false && countnu==0)
+        {
+            let temp2= document.getElementById("negin3"+i)
+            temp2.style.border = "2px solid red"
+            a=false
+            c=c+eval('item3'+i)
+            count=count+1
+        }
+        else{
+            let temp2= document.getElementById("negin3"+i)
+            temp2.style.border = "thin solid black"
+
+        }
+    }
+    if (a==true){
+        
+        temp3=document.getElementsByClassName("no3")
+        for(let i=0;i<4;i++){
+            let temp= parseInt(document.getElementById("negin3"+(i+1)).value)
+            temp3[i].innerHTML=(eval("for3_"+(1+i)+"2")/9).toFixed(3)
+            likelihood.push((eval("for3_"+(1+i)+"2")/9).toFixed(3))  
+    }
+
+   document.getElementById("submitFreq").disabled=true;
+    
+   
+    d=document.getElementById("nextbt")
+            d.disabled=false
+            d.style.cursor="pointer"
+            Swal.fire({
+  icon: 'success',
+  html: 'Click on the <b style="color:#004E86">NEXT</b> button.',
+  showCancelBotton:true,
+  allowOutsideClick: false,
+  target: '.container',
+  customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+});
+
+d.onclick=function(){tonextConditional()}
+}
+
+else{
+    let g=''
+        if(count>countnu){
+        if(count==1){
+            tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c=  `Enter correct value in `+c+" field."
+        g="INCORRECT VALUE!"
+    }
+    
+    if(count>1 && count<=3){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter correct values in `+c+" fields."
+        g="INCORRECT VALUES!"
+    }
+    if(count==4){
+      c=`Enter correct values in all the fields.`
+      g="INCORRECT VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+}
+if(countnu>count){
+    let g=''
+    if(countnu==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c=`Enter value in `+c+' field.'
+        g="MISSING VALUE!"
+    }
+    
+    if(countnu>1 && countnu<=3){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c=`Enter values in `+c+" fields."
+        g="MISSING VALUES!"
+    }
+    if(countnu==4){
+      c=`Enter values in all the fields.`
+      g="MISSING VALUES!"
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },   
+    });
+
+}
+    }
+
+    
+    }
+
+}
+
+function toreset_occurance(){
+
+let temp3= document.getElementById("forformule")
+temp3.innerHTML=""
+
+uncheck3.checked=false
+uncheck4.checked=false
+uncheck7.checked=false
+uncheck5.checked=false
+
+if(target_dict[0]=='Love Pain Joy Love Kick')
+{
+    let temp = document.getElementById("secondtable")
+temp.innerHTML=`                          <tr>
+                    <td rowspan="2"><b>S.No</b></td>
+                    <td rowspan="2" ><b>FEATURES</b></td>
+                    <td colspan="2"><b>CLASS</b>
+                        <tr>
+                            <td><b>YES (h)</b></td>
+                            <td><b>NO (-h)<b></td>
+                        </tr>
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td id >Love</td>
+                    <td id= addinc1 class="yes">
+                        <math style="font-weight: bold; font-size: 20px; ">
+                            <mfrac>
+                                <mrow>
+                                    <mn><input id= addin1 max="10" min="0" type="number" style="width: 30px; text-align: center;"></mn>
+                                </mrow>
+                
+                                <mi style="display:block">19</mi>
+                
+                
+                            </mfrac>
+                            </math>
+                        </td>
+
+                    <td id="neginc1" class="no">
+                        <math style="font-weight: bold; font-size: 20px; ">
+                            <mfrac>
+                                <mrow>
+                                    <mn><input id="negin1" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                </mrow>
+                
+                                <mi style="display:block">9</mi>
+                
+                
+                            </mfrac>
+                            </math>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Pain</td>
+                    <td id= addinc2 class="yes">
+                        <math style="font-weight: bold; font-size: 20px; ">
+                            <mfrac>
+                                <mrow>
+                                    <mn><input id= addin2 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                </mrow>
+                                <mi style="display:block">19</mi>
+                            </mfrac>
+                            </math>
+                         </td>
+
+                    <td id="neginc2" class="no">
+                        <math style="font-weight: bold; font-size: 20px; ">
+                            <mfrac>
+                                <mrow>
+                                    <mn><input id="negin2" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                </mrow>
+                                <mi style="display:block">9</mi>
+                            </mfrac>
+                            </math>
+                        </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Joy</td>
+                    <td id= addinc3 class="yes">
+                        <math style="font-weight: bold; font-size: 20px; ">
+                            <mfrac>
+                                <mrow>
+                                    <mn><input id= addin3 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                </mrow>
+                                <mi style="display:block">19</mi>
+                            </mfrac>
+                            </math>
+                         </td>
+
+                    <td id="neginc3" class="no">
+                        <math style="font-weight: bold; font-size: 20px; ">
+                            <mfrac>
+                                <mrow>
+                                    <mn> <input id="negin3" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled> </mn>
+                                </mrow>
+                                <mi style="display:block">9</mi>
+                            </mfrac>
+                            </math>
+                       </td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Kick</td>
+
+                    <td id= addinc4 class="yes">
+                        <math style="font-weight: bold; font-size: 20px; ">
+                            <mfrac>
+                                <mrow>
+                                    <mn>  <input id= addin4 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                </mrow>
+                                <mi style="display:block">19</mi>
+                            </mfrac>
+                            </math>
+                       </td>
+
+                    <td id="neginc4" class="no">
+                        <math style="font-weight: bold; font-size: 20px; ">
+                            <mfrac>
+                                <mrow>
+                                    <mn>  <input id="negin4" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                </mrow>
+                                <mi style="display:block">9</mi>
+                            </mfrac>
+                            </math>
+                        
+                         </td>
+                </tr>
+               `
+}
+
+   
+else if(target_dict[0]=='Good Love Kick Joy')
+{
+    if(countLaplace==0)
+    {
+        let temp = document.getElementById("secondtable2")
+temp.innerHTML=`  <tr>
+                        <td rowspan="2"><b>S.No</b></td>
+                        <td rowspan="2" ><b>FEATURES</b></td>
+                        <td colspan="2"><b>CLASS</b>
+                            <tr>
+                                <td><b>YES (h)</b></td>
+                                <td><b>NO (-h)<b></td>
+                            </tr>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Good</td>
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin21 max="10" min="0" type="number" style="width: 30px; text-align: center;"></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">19</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                            </td>
+
+                        <td  class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin21" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">9</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Love</td>
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin22 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin22" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Kick</td>
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin23 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn> <input id="negin23" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled> </mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Joy</td>
+
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id= addin24 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+
+                        <td class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id="negin24" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                            
+                             </td>
+                    </tr> `
+    }
+    
+    else if(countLaplace==1)
+    {
+        let temp = document.getElementById("secondtable2")
+temp.innerHTML=`  <tr>
+                        <td rowspan="2"><b>S.No</b></td>
+                        <td rowspan="2" ><b>FEATURES</b></td>
+                        <td colspan="2"><b>CLASS</b>
+                            <tr>
+                                <td><b>YES (h)</b></td>
+                                <td><b>NO (-h)<b></td>
+                            </tr>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Good</td>
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin21 max="10" min="0" type="number" style="width: 30px; text-align: center;"></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">19+7</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                            </td>
+
+                        <td  class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin21" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">9+7</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Love</td>
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin22 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19+7</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin22" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9+7</mi>
+                                </mfrac>
+                                </math>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Kick</td>
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin23 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19+7</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn> <input id="negin23" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled> </mn>
+                                    </mrow>
+                                    <mi style="display:block">9+7</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Joy</td>
+
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id= addin24 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19+7</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+
+                        <td class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id="negin24" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9+7</mi>
+                                </mfrac>
+                                </math>
+                            
+                             </td>
+                    </tr> `
+    }
+}
+                                
+else if(target_dict[0]=='Pain Kick Joy Love')
+{
+   
+        let temp = document.getElementById("secondtable3")
+        temp.innerHTML=`<tr>
+                        <td rowspan="2"><b>S.No</b></td>
+                        <td rowspan="2" ><b>FEATURES</b></td>
+                        <td colspan="2"><b>CLASS</b>
+                            <tr>
+                                <td><b>YES (h)</b></td>
+                                <td><b>NO (-h)<b></td>
+                            </tr>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Pain</td>
+                        <td class="yes3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin31 max="10" min="0" type="number" style="width: 30px; text-align: center;"></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">19</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                            </td>
+
+                        <td  class="no3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin31" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">9</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Kick</td>
+                        <td class="yes3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin32 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td class="no3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin32" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Joy</td>
+                        <td class="yes3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin33 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td class="no3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn> <input id="negin33" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled> </mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Love</td>
+
+                        <td class="yes3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id= addin34 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+
+                        <td class="no3">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id="negin34" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9</mi>
+                                </mfrac>
+                                </math>
+                            
+                             </td>
+                    </tr>`
+    
+    
+
+}
+                                
+
+
+
+submit=document.getElementById("submitFreq")
+                                submit.onclick=function(){tosubmitFrq()}
+                                submit.disabled=false
+                                submit.style.cursor="pointer"
+        next=document.getElementById("nextbt")
+        next.disabled=true
+        next.style.cursor="not-allowed"
+
+}
+
+function tonextLaplace()
+{
+    likelihood=[];
+    countLaplace++;
+ if(target_dict[0]=='Good Love Kick Joy')
+{
+    let temp = document.getElementById("secondtable2")
+temp.innerHTML=`  <tr>
+                        <td rowspan="2"><b>S.No</b></td>
+                        <td rowspan="2"><b>FEATURES</b></td>
+                        <td colspan="2"><b>CLASS</b>
+                            <tr>
+                                <td><b>YES (h)</b></td>
+                                <td><b>NO (-h)<b></td>
+                            </tr>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Good</td>
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin21 max="10" min="0" type="number" style="width: 30px; text-align: center;"></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">19+7</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                            </td>
+
+                        <td  class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin21" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                    
+                                    <mi style="display:block">9+7</mi>
+                    
+                    
+                                </mfrac>
+                                </math>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Love</td>
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin22 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19+7</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id="negin22" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9+7</mi>
+                                </mfrac>
+                                </math>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Kick</td>
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn><input id= addin23 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19+7</mi>
+                                </mfrac>
+                                </math>
+                             </td>
+
+                        <td class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn> <input id="negin23" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled> </mn>
+                                    </mrow>
+                                    <mi style="display:block">9+7</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Joy</td>
+
+                        <td class="yes2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id= addin24 max="10" min="0" type="number" style="width: 30px;text-align: center;"></mn>
+                                    </mrow>
+                                    <mi style="display:block">19+7</mi>
+                                </mfrac>
+                                </math>
+                           </td>
+
+                        <td class="no2">
+                            <math style="font-weight: bold; font-size: 20px; ">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>  <input id="negin24" max="10" min="0" type="number" style="width: 30px; cursor:not-allowed;text-align: center;" disabled></mn>
+                                    </mrow>
+                                    <mi style="display:block">9+7</mi>
+                                </mfrac>
+                                </math>
+                            
+                             </td>
+                    </tr> `
+}
+                                
+
+
+
+}
+
+function tonextConditional(){
+    addlike = 1;
+    let temp =document.getElementById("secondtable")
+        temp.style.height="300px"
+        temp.style.display="none"
+
+    let temp1 =document.getElementById("secondtable2")
+        temp1.style.height="300px"
+        temp1.style.display="none"
+
+      document.getElementById("secondtable3").style.display="none"
+
+
+    let temp2 =document.getElementById("dataPointsTable")
+        temp2.style.display="none"
+    let tempcalhed=document.getElementById("calculation")
+        tempcalhed.innerHTML="POSTERIOR PROBABILITY "
+    
+    let temp4 =document.getElementById("tablesContainer")
+        temp4.style.height="0px"
+    
+      
+    let temp7= document.getElementById("nextbt")
+        temp7.disabled=true
+        temp7.style.cursor="not-allowed"
+
+    let temp8=document.getElementById("trainToTest")
+        temp8.innerHTML='CALCULATED VALUE'
+ 
+    
+    let temp21 = document.getElementById("divcshow")
+        temp21.innerHTML=''
+  
+    let temp20 = document.getElementById("divcedshow")
+        temp20.style.display='flex'
+        temp21.style.display='flex'
+
+    let temp13= document.getElementById("reset")
+        temp13.onclick=function(){ toresetConditional1()}
+    let temp6= document.getElementById("submitFreq")
+        temp6.onclick=function(){tosubmitConditional()}
+        temp6.disabled=false
+        temp6.style.cursor="pointer"
+    let divte = document.getElementById('divte')
+        divte.innerhtml=''
+    let tdcontainer=document.getElementById("TOBOLD")
+    let rowii = tdcontainer.getElementsByTagName('td')
+    target_dict=[rowii[1].innerText]
+        divte.innerHTML=`<b>d₇</b> = { ${rowii[1].innerText} }`
+        divte.style.marginTop="60px"
+        divte.style.marginLeft="20px"
+        divte.style.display=""
+    let tempft= document.getElementById("firsttable")
+        tempft.style.display=""
+    let temp10=document.getElementById('addind')
+        temp10.style.position="absolute"
+        temp10.style.top="-100px"
+        temp10.style.width=""
+        temp10.style.marginLeft="10px"
+        if(target_dict[0]=='Love Pain Joy Love Kick')
+        {
+            temp10.innerHTML="<b style='color:#004E86'>P(h|d₇)</b> = <input id=yes placeholder = 'P(h)' type=number max=null min=0 style='width:50px;text-align: center;'> * \
+        <input id=yesLove placeholder = 'P(Love|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesPain placeholder = 'P(Pain|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesJoy placeholder = 'P(Joy|h)' type=number max=10 min=0 style='margin-left: 75px;margin-top: 10px;width:80px;text-align: center;'> * \
+        <input id=yesLove2 placeholder = 'P(Love|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesKick placeholder = 'P(Kick|h)' type=number max=10 min=0 style='width:80px;text-align: center;'>"    
+        let temp11=document.getElementById("negind")
+        temp11.innerHTML="<b style='color:#004E86'>P(-h|d₇)</b> = <input id=no placeholder = 'P(-h)'type=number max=10 min=0 disabled=true style='width:50px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noLove placeholder = 'P(Love|-h)' type=number max=10 min=0 disabled=true style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noPain placeholder = 'P(Pain|-h)' type=number max=10 min=0 disabled=true style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noJoy placeholder = 'P(Joy|-h)' type=number disabled=true max=10 min=0 style='width:80px;text-align: center;cursor:not-allowed;margin-left: 82px;margin-top: 10px;'> * \
+        <input id=noLove2 placeholder = 'P(Love|-h)' type=number disabled=true max=10 min=0 style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noKick placeholder = 'P(Kick|-h)' type=number disabled=true max=10 min=0 style='width:80px;text-align: center;cursor:not-allowed;'>"
+        temp11.style.marginLeft="10px"
+        temp11.style.width=""
+        }
+        else if(target_dict[0]=='Good Love Kick Joy')
+        {
+            temp10.innerHTML="<b style='color:#004E86'>P(h|d₇)</b> = <input id=yes placeholder = 'P(h)' type=number max=null min=0 style='width:50px;text-align: center;'> * \
+        <input id=yesGood placeholder = 'P(Good|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesLove placeholder = 'P(Love|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesKick placeholder = 'P(Kick|h)' type=number max=10 min=0 style='margin-left: 75px;margin-top: 10px;width:80px;text-align: center;'> * \
+        <input id=yesJoy placeholder = 'P(Joy|h)' type=number max=10 min=0 style='width:80px;text-align: center;'>"    
+        let temp11=document.getElementById("negind")
+        temp11.innerHTML="<b style='color:#004E86'>P(-h|d₇)</b> = <input id=no placeholder = 'P(-h)'type=number max=10 min=0 disabled=true style='width:50px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noGood placeholder = 'P(Good|-h)' type=number max=10 min=0 disabled=true style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noLove placeholder = 'P(Love|-h)' type=number max=10 min=0 disabled=true style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noKick placeholder = 'P(Kick|-h)' type=number disabled=true max=10 min=0 style='width:80px;text-align: center;cursor:not-allowed;margin-left: 82px;margin-top: 10px;'> * \
+        <input id=noJoy placeholder = 'P(Joy|-h)' type=number disabled=true max=10 min=0 style='width:80px;text-align: center;cursor:not-allowed;'> "
+        temp11.style.marginLeft="10px"
+        temp11.style.width=""
+        }
+        else if(target_dict[0]=='Pain Kick Joy Love')
+        {
+            temp10.innerHTML="<b style='color:#004E86'>P(h|d₇)</b> = <input id=yes placeholder = 'P(h)' type=number max=null min=0 style='width:50px;text-align: center;'> * \
+        <input id=yesPain placeholder = 'P(Pain|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesKick placeholder = 'P(Kick|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesJoy placeholder = 'P(Joy|h)' type=number max=10 min=0 style='margin-left: 75px;margin-top: 10px;width:80px;text-align: center;'> * \
+        <input id=yesLove placeholder = 'P(Love|h)' type=number max=10 min=0 style='width:80px;text-align: center;'>"    
+        let temp11=document.getElementById("negind")
+        temp11.innerHTML="<b style='color:#004E86'>P(-h|d₇)</b> = <input id=no placeholder = 'P(-h)'type=number max=10 min=0 disabled=true style='width:50px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noPain placeholder = 'P(Pain|-h)' type=number max=10 min=0 disabled=true style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noKick placeholder = 'P(Kick|-h)' type=number max=10 min=0 disabled=true style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noJoy placeholder = 'P(Joy|-h)' type=number disabled=true max=10 min=0 style='width:80px;text-align: center;cursor:not-allowed;margin-left: 82px;margin-top: 10px;'> * \
+        <input id=noLove placeholder = 'P(Love|-h)' type=number disabled=true max=10 min=0 style='width:80px;text-align: center;cursor:not-allowed;'> "
+        temp11.style.marginLeft="10px"
+        temp11.style.width=""
+        }
+  
+}
+
+
+function tosubmitConditional(){
+    
+    
+    if(target_dict[0]=='Love Pain Joy Love Kick')
+    {
+        let temp=document.getElementById("TOBOLD")
+    let fitemp11=document.getElementById('yes')
+let fitemp21=document.getElementById('yesLove')
+let fitemp31=document.getElementById('yesPain')
+let fitemp41=document.getElementById('yesJoy')
+let fitemp51=document.getElementById('yesLove2')
+let fitemp61=document.getElementById('yesKick')
+
+let fitemp12=document.getElementById('no')
+let fitemp22=document.getElementById('noLove')
+let fitemp32=document.getElementById('noPain')
+let fitemp42=document.getElementById('noJoy')
+let fitemp52=document.getElementById('noLove2')
+let fitemp62=document.getElementById('noKick')
+
+    if (ConditionalCount==1){
+      
+    if(isNaN(parseFloat(fitemp12.value))==false && isNaN(parseFloat(fitemp22.value))==false && isNaN(parseFloat(fitemp32.value))==false && isNaN(parseFloat(fitemp42.value))==false && isNaN(parseFloat(fitemp52.value))==false && isNaN(parseFloat(fitemp62.value))==false ){
+     if(parseFloat(fitemp12.value)==(forNo/6).toFixed(2) && parseFloat(fitemp22.value)==likelihood[4] && parseFloat(fitemp32.value)==likelihood[5] && parseFloat(fitemp42.value)==likelihood[6]  && parseFloat(fitemp52.value)==likelihood[4]  && parseFloat(fitemp62.value)==likelihood[7]){
+        temp10=document.getElementById('negind')
+        new_instance_no=((forNo/6)*(likelihood[4])*(likelihood[4])*likelihood[5]*likelihood[6]*likelihood[7]).toFixed(4)
+        if(new_instance_no==0){
+            new_instance_no=((forNo/6)*(likelihood[4])*(likelihood[4])*likelihood[5]*likelihood[6]*likelihood[7]).toFixed(8)
+        }
+        temp10.innerHTML="<b>P(-h|d₇)</b> = "+new_instance_no
+        
+        let temp17 = document.getElementById("divcshow")
+    temp17.innerHTML=''
+    let temp90=document.getElementById("one")
+temp90.checked=false
+let temp91=document.getElementById("two")
+temp91.checked=false
+
+        addlike=0
+        let temp6= document.getElementById("submitFreq")
+    temp6.disabled=true
+    temp6.style.cursor="not-allowed"
+    let temp7= document.getElementById("nextbt")
+    temp7.onclick=function(){tonextAnalyze()}
+    temp7.disabled=false
+    temp7.style.cursor="pointer"
+    let temp13= document.getElementById("reset")
+    temp13.onclick=function(){ toresetConditional2()}
+    let fitemp12=document.getElementById('no');
+
+    Swal.fire({
+  icon: 'success',
+  html: 'Click on the <b style="color:#004E86">NEXT</b> button.',
+  showCancelBotton:true,
+  allowOutsideClick: false,
+  target: '.container',
+  customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },   
+});
+  
+       }
+       else{
+    let countyn =0;
+    let c=''
+    let g =''
+    if (parseFloat(fitemp12.value)!=(forNo/6).toFixed(2)){
+        c=c+"P(-h) ,"
+        countyn=countyn+1
+        fitemp12.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp12.style.border=""
+    }
+    if (parseFloat(fitemp22.value)!=likelihood[4]){
+        c=c+"P(Love|-h) ,"
+        countyn=countyn+1
+        fitemp22.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp22.style.border=""
+    }
+    if (parseFloat(fitemp32.value)!=likelihood[5]){
+        c=c+"P(Pain|-h) ,"
+        countyn=countyn+1
+        fitemp32.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp32.style.border=""
+    }
+    if (parseFloat(fitemp42.value)!=likelihood[6]){
+        c=c+"P(Joy|-h) ,"
+        countyn=countyn+1
+        fitemp42.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp42.style.border=""
+    }
+    if (parseFloat(fitemp52.value)!=likelihood[4]){
+        c=c+"P(Love|-h) ,"
+        countyn=countyn+1
+        fitemp52.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp52.style.border=""
+    }
+    if (parseFloat(fitemp62.value)!=likelihood[7]){
+        c=c+"P(Kick|-h) ,"
+        countyn=countyn+1
+        fitemp62.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp62.style.border=""
+    }
+    if(countyn==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c="Value entered in "+c+" field is incorrect."
+        g='INCORRECT VALUE'
+    }
+    if(countyn>1 && countyn<6){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c="Values entered in "+c+" fields are incorrect."
+        g='INCORRECT VALUES!'
+    }
+    if(countyn==6){
+        c="Values entered in all the fields are incorrect."
+        g='INCORRECT VALUES!'
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },   
+    });
+
+    }
+  }
+  else{
+    let countyn =0;
+    let c=''
+    let e=''
+    if (isNaN(parseFloat(fitemp12.value))==true){
+        c=c+"P(-h) ,"
+        countyn=countyn+1
+        fitemp12.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp12.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp22.value))==true){
+        c=c+"P(Love|-h) ,"
+        countyn=countyn+1
+        fitemp22.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp22.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp32.value))==true){
+        c=c+"P(Pain|-h) ,"
+        countyn=countyn+1
+        fitemp32.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp32.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp42.value))==true){
+        c=c+"P(Joy|-h) ,"
+        countyn=countyn+1
+        fitemp42.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp42.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp52.value))==true){
+        c=c+"P(Love|-h) ,"
+        countyn=countyn+1
+        fitemp52.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp52.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp62.value))==true){
+        c=c+"P(Kick|-h) ,"
+        countyn=countyn+1
+        fitemp62.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp62.style.border=""
+    }
+    if(countyn==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c="Enter a value in "+c+" field."
+        e="MISSING VALUE"
+    }
+    if(countyn>1 && countyn<6){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c="Enter the values in "+c+" fields."
+        e="MISSING VALUES!"
+    }
+    if(countyn==6){
+        c="Enter the values in all the fields."
+        e="MISSING VALUES!"
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: e,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+
+    }
+    
+}
+
+    if (ConditionalCount==0){
+    
+    if(isNaN(parseFloat(fitemp11.value))==false && isNaN(parseFloat(fitemp21.value))==false && isNaN(parseFloat(fitemp31.value))==false && isNaN(parseFloat(fitemp41.value))==false && isNaN(parseFloat(fitemp51.value))==false && isNaN(parseFloat(fitemp61.value))==false){
+     if(parseFloat(fitemp11.value)==(forYes/6).toFixed(2) && parseFloat(fitemp21.value)==likelihood[0] && parseFloat(fitemp31.value)==likelihood[1] && parseFloat(fitemp41.value)==likelihood[2] && parseFloat(fitemp51.value)==likelihood[0] && parseFloat(fitemp61.value)==likelihood[3]){
+        temp10=document.getElementById('addind')
+        new_instance_yes=((forYes/6)*(likelihood[0])*(likelihood[0])*likelihood[1]*likelihood[2]*likelihood[3]).toFixed(4)
+        if(new_instance_yes==0){
+            new_instance_yes=((forYes/6)*(likelihood[0])*(likelihood[0])*likelihood[1]*likelihood[2]*likelihood[3]).toFixed(8)
+        }
+        temp10.innerHTML="<b>P(h|d₇) </b>= "+new_instance_yes
+        addlike=2
+        ConditionalCount=1
+
+        let temp17 = document.getElementById("divcshow")
+    temp17.innerHTML=''
+    let temp90=document.getElementById("one")
+temp90.checked=false
+let temp91=document.getElementById("two")
+temp91.checked=false
+
+
+fitemp12.disabled=false
+fitemp22.disabled=false
+fitemp32.disabled=false
+fitemp42.disabled=false
+fitemp52.disabled=false
+fitemp62.disabled=false
+
+fitemp12.style.cursor="pointer"
+fitemp22.style.cursor="pointer"
+fitemp32.style.cursor="pointer"
+fitemp42.style.cursor="pointer"
+fitemp52.style.cursor="pointer"
+fitemp62.style.cursor="pointer"
+  
+       }
+       else{
+    let countyn =0;
+    let c=''
+    let g =''
+    if (parseFloat(fitemp11.value)!=(forNo/6).toFixed(2)){
+        c=c+"P(h) ,"
+        countyn=countyn+1
+        
+            fitemp11.style.border="2px solid red"
+        }
+        else{
+            
+            fitemp11.style.border=""
+        }
+    if (parseFloat(fitemp21.value)!=likelihood[0]){
+        c=c+"P(Love|h) ,"
+        countyn=countyn+1
+        
+        fitemp21.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp21.style.border=""
+    }
+    if (parseFloat(fitemp31.value)!=likelihood[1]){
+        c=c+"P(Pain|h) ,"
+        countyn=countyn+1
+        
+        fitemp31.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp31.style.border=""
+    }
+    if (parseFloat(fitemp41.value)!=likelihood[2]){
+        c=c+"P(Joy|h) ,"
+        countyn=countyn+1
+        
+        fitemp41.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp41.style.border=""
+    }
+    if (parseFloat(fitemp51.value)!=likelihood[0]){
+        c=c+"P(Love|h) ,"
+        countyn=countyn+1
+        
+        fitemp51.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp51.style.border=""
+    }
+    if (parseFloat(fitemp61.value)!=likelihood[3]){
+        c=c+"P(Kick|h) ,"
+        countyn=countyn+1
+        
+        fitemp61.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp61.style.border=""
+    }
+
+    if(countyn==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c="Value entered in "+c+" field is incorrect."
+        g='INCORRECT VALUE'
+    }
+    if(countyn>1 && countyn<6){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c="Values entered in "+c+" fields are incorrect."
+        g='INCORRECT VALUES!'
+    }
+    if(countyn==6){
+        c="Values entered in all the fields are incorrect. "
+        g='INCORRECT VALUES!'
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },    
+    });
+
+    }
+  }
+  else{
+    let countyn =0;
+    let c=''
+    let e=''
+    if (isNaN(parseFloat(fitemp11.value))==true){
+        c=c+"P(h) ,"
+        countyn=countyn+1
+        fitemp11.style.border="2px solid red"
+
+    }
+    else{
+        fitemp11.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp21.value))==true){
+        c=c+"P(Love|h) ,"
+        countyn=countyn+1
+        fitemp21.style.border="2px solid red"
+
+    }
+    else{
+        fitemp21.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp31.value))==true){
+        c=c+"P(Pain|h) ,"
+        countyn=countyn+1
+        fitemp31.style.border="2px solid red"
+
+    }
+    else{
+        fitemp31.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp41.value))==true){
+        c=c+"P(Joy|h) ,"
+        countyn=countyn+1
+        fitemp41.style.border="2px solid red"
+    }
+    else{
+        fitemp41.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp51.value))==true){
+        c=c+"P(Love|h) ,"
+        countyn=countyn+1
+        fitemp51.style.border="2px solid red"
+    }
+    else{
+        fitemp51.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp61.value))==true){
+        c=c+"P(Kick|h) ,"
+        countyn=countyn+1
+        fitemp61.style.border="2px solid red"
+    }
+    else{
+        fitemp61.style.border=""
+    }
+    if(countyn==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c="Enter a value in "+c+" field."
+        e="MISSING VALUE"
+    }
+    if(countyn>1 && countyn<6){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c="Enter the values in "+c+" fields."
+        e="MISSING VALUES!"
+    }
+    if(countyn==6){
+        c="Enter the values in all the fields."
+        e="MISSING VALUES!"
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: e,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+
+    }
+    }
+
+
+    }
+
+    else if(target_dict[0]=='Good Love Kick Joy')
+    {
+        let temp=document.getElementById("TOBOLD")
+    let fitemp11=document.getElementById('yes')
+let fitemp21=document.getElementById('yesGood')
+let fitemp31=document.getElementById('yesLove')
+let fitemp41=document.getElementById('yesKick')
+let fitemp51=document.getElementById('yesJoy')
+
+
+let fitemp12=document.getElementById('no')
+let fitemp22=document.getElementById('noGood')
+let fitemp32=document.getElementById('noLove')
+let fitemp42=document.getElementById('noKick')
+let fitemp52=document.getElementById('noJoy')
+
+
+    if (ConditionalCount==1){
+      
+    if(isNaN(parseFloat(fitemp12.value))==false && isNaN(parseFloat(fitemp22.value))==false && isNaN(parseFloat(fitemp32.value))==false && isNaN(parseFloat(fitemp42.value))==false && isNaN(parseFloat(fitemp52.value))==false ){
+     if(parseFloat(fitemp12.value)==(forNo/6).toFixed(2) && parseFloat(fitemp22.value)==likelihood[4] && parseFloat(fitemp32.value)==likelihood[5] && parseFloat(fitemp42.value)==likelihood[6]  && parseFloat(fitemp52.value)==likelihood[7] ){
+        temp10=document.getElementById('negind')
+        new_instance_no=((forNo/6)*(likelihood[4])*likelihood[5]*likelihood[6]*likelihood[7]).toFixed(4)
+        if(new_instance_no==0){
+            new_instance_no=((forNo/6)*(likelihood[4])*likelihood[5]*likelihood[6]*likelihood[7]).toFixed(8)
+        }
+        temp10.innerHTML="<b>P(-h|d₇)</b> = "+new_instance_no
+        
+        let temp17 = document.getElementById("divcshow")
+    temp17.innerHTML=''
+    let temp90=document.getElementById("one")
+temp90.checked=false
+let temp91=document.getElementById("two")
+temp91.checked=false
+
+        addlike=0
+        let temp6= document.getElementById("submitFreq")
+    temp6.disabled=true
+    temp6.style.cursor="not-allowed"
+    let temp7= document.getElementById("nextbt")
+    temp7.onclick=function(){tonextAnalyze()}
+    temp7.disabled=false
+    temp7.style.cursor="pointer"
+    let temp13= document.getElementById("reset")
+    temp13.onclick=function(){ toresetConditional2()}
+    let fitemp12=document.getElementById('no')
+    Swal.fire({
+  icon: 'success',
+  html: 'Click on the <b style="color:#004E86">NEXT</b> button.',
+  showCancelBotton:true,
+  allowOutsideClick: false,
+  target: '.container',
+  customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },   
+});
+  
+       }
+       else{
+    let countyn =0;
+    let c=''
+    let g =''
+    if (parseFloat(fitemp12.value)!=(forNo/6).toFixed(2)){
+        c=c+"P(-h) ,"
+        countyn=countyn+1
+        fitemp12.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp12.style.border=""
+    }
+    if (parseFloat(fitemp22.value)!=likelihood[4]){
+        c=c+"P(Good|-h) ,"
+        countyn=countyn+1
+        fitemp22.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp22.style.border=""
+    }
+    if (parseFloat(fitemp32.value)!=likelihood[5]){
+        c=c+"P(Love|-h) ,"
+        countyn=countyn+1
+        fitemp32.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp32.style.border=""
+    }
+    if (parseFloat(fitemp42.value)!=likelihood[6]){
+        c=c+"P(Kick|-h) ,"
+        countyn=countyn+1
+        fitemp42.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp42.style.border=""
+    }
+    if (parseFloat(fitemp52.value)!=likelihood[7]){
+        c=c+"P(Joy|-h) ,"
+        countyn=countyn+1
+        fitemp52.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp52.style.border=""
+    }
+   
+    if(countyn==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c="Value entered in "+c+" field is incorrect."
+        g='INCORRECT VALUE'
+    }
+    if(countyn>1 && countyn<5){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c="Values entered in "+c+" fields are incorrect."
+        g='INCORRECT VALUES!'
+    }
+    if(countyn==5){
+        c="Values entered in all the fields are incorrect."
+        g='INCORRECT VALUES!'
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },   
+    });
+
+    }
+  }
+  else{
+    let countyn =0;
+    let c=''
+    let e=''
+    if (isNaN(parseFloat(fitemp12.value))==true){
+        c=c+"P(-h) ,"
+        countyn=countyn+1
+        fitemp12.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp12.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp22.value))==true){
+        c=c+"P(Good|-h) ,"
+        countyn=countyn+1
+        fitemp22.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp22.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp32.value))==true){
+        c=c+"P(Love|-h) ,"
+        countyn=countyn+1
+        fitemp32.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp32.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp42.value))==true){
+        c=c+"P(Kick|-h) ,"
+        countyn=countyn+1
+        fitemp42.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp42.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp52.value))==true){
+        c=c+"P(Joy|-h) ,"
+        countyn=countyn+1
+        fitemp52.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp52.style.border=""
+    }
+  
+    if(countyn==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c="Enter a value in "+c+" field."
+        e="MISSING VALUE"
+    }
+    if(countyn>1 && countyn<5){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c="Enter the values in "+c+" fields."
+        e="MISSING VALUES!"
+    }
+    if(countyn==5){
+        c="Enter the values in all the fields."
+        e="MISSING VALUES!"
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: e,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+
+    }
+    
+}
+
+    if (ConditionalCount==0){
+    
+    if(isNaN(parseFloat(fitemp11.value))==false && isNaN(parseFloat(fitemp21.value))==false && isNaN(parseFloat(fitemp31.value))==false && isNaN(parseFloat(fitemp41.value))==false && isNaN(parseFloat(fitemp51.value))==false ){
+     if(parseFloat(fitemp11.value)==(forYes/6).toFixed(2) && parseFloat(fitemp21.value)==likelihood[0] && parseFloat(fitemp31.value)==likelihood[1] && parseFloat(fitemp41.value)==likelihood[2] && parseFloat(fitemp51.value)==likelihood[3] ){
+        temp10=document.getElementById('addind')
+        new_instance_yes=((forYes/6)*(likelihood[0])*likelihood[1]*likelihood[2]*likelihood[3]).toFixed(4)
+        if(new_instance_yes==0){
+            new_instance_yes=((forYes/6)*(likelihood[0])*likelihood[1]*likelihood[2]*likelihood[3]).toFixed(8)
+        }
+        temp10.innerHTML="<b>P(h|d₇) </b>= "+new_instance_yes
+        addlike=2
+        ConditionalCount=1
+
+        let temp17 = document.getElementById("divcshow")
+    temp17.innerHTML=''
+    let temp90=document.getElementById("one")
+temp90.checked=false
+let temp91=document.getElementById("two")
+temp91.checked=false
+
+
+fitemp12.disabled=false
+fitemp22.disabled=false
+fitemp32.disabled=false
+fitemp42.disabled=false
+fitemp52.disabled=false
+
+
+fitemp12.style.cursor="pointer"
+fitemp22.style.cursor="pointer"
+fitemp32.style.cursor="pointer"
+fitemp42.style.cursor="pointer"
+fitemp52.style.cursor="pointer"
+
+  
+       }
+       else{
+    let countyn =0;
+    let c=''
+    let g =''
+    if (parseFloat(fitemp11.value)!=(forNo/6).toFixed(2)){
+        c=c+"P(h) ,"
+        countyn=countyn+1
+        
+            fitemp11.style.border="2px solid red"
+        }
+        else{
+            
+            fitemp11.style.border=""
+        }
+    if (parseFloat(fitemp21.value)!=likelihood[0]){
+        c=c+"P(Good|h) ,"
+        countyn=countyn+1
+        
+        fitemp21.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp21.style.border=""
+    }
+    if (parseFloat(fitemp31.value)!=likelihood[1]){
+        c=c+"P(Love|h) ,"
+        countyn=countyn+1
+        
+        fitemp31.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp31.style.border=""
+    }
+    if (parseFloat(fitemp41.value)!=likelihood[2]){
+        c=c+"P(Kick|h) ,"
+        countyn=countyn+1
+        
+        fitemp41.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp41.style.border=""
+    }
+    if (parseFloat(fitemp51.value)!=likelihood[3]){
+        c=c+"P(Joy|h) ,"
+        countyn=countyn+1
+        
+        fitemp51.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp51.style.border=""
+    }
+  
+
+    if(countyn==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c="Value entered in "+c+" field is incorrect."
+        g='INCORRECT VALUE'
+    }
+    if(countyn>1 && countyn<5){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c="Values entered in "+c+" fields are incorrect."
+        g='INCORRECT VALUES!'
+    }
+    if(countyn==5){
+        c="Values entered in all the fields are incorrect. "
+        g='INCORRECT VALUES!'
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },    
+    });
+
+    }
+  }
+  else{
+    let countyn =0;
+    let c=''
+    let e=''
+    if (isNaN(parseFloat(fitemp11.value))==true){
+        c=c+"P(h) ,"
+        countyn=countyn+1
+        fitemp11.style.border="2px solid red"
+
+    }
+    else{
+        fitemp11.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp21.value))==true){
+        c=c+"P(Good|h) ,"
+        countyn=countyn+1
+        fitemp21.style.border="2px solid red"
+
+    }
+    else{
+        fitemp21.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp31.value))==true){
+        c=c+"P(Love|h) ,"
+        countyn=countyn+1
+        fitemp31.style.border="2px solid red"
+
+    }
+    else{
+        fitemp31.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp41.value))==true){
+        c=c+"P(Kick|h) ,"
+        countyn=countyn+1
+        fitemp41.style.border="2px solid red"
+    }
+    else{
+        fitemp41.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp51.value))==true){
+        c=c+"P(Joy|h) ,"
+        countyn=countyn+1
+        fitemp51.style.border="2px solid red"
+    }
+    else{
+        fitemp51.style.border=""
+    }
+    
+    if(countyn==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c="Enter a value in "+c+" field."
+        e="MISSING VALUE"
+    }
+    if(countyn>1 && countyn<5){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c="Enter the values in "+c+" fields."
+        e="MISSING VALUES!"
+    }
+    if(countyn==5){
+        c="Enter the values in all the fields."
+        e="MISSING VALUES!"
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: e,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+
+    }
+    }
+
+    }
+
+    else if(target_dict[0]=='Pain Kick Joy Love')
+    {
+        let temp=document.getElementById("TOBOLD")
+    let fitemp11=document.getElementById('yes')
+let fitemp21=document.getElementById('yesPain')
+let fitemp31=document.getElementById('yesKick')
+let fitemp41=document.getElementById('yesJoy')
+let fitemp51=document.getElementById('yesLove')
+
+
+let fitemp12=document.getElementById('no')
+let fitemp22=document.getElementById('noPain')
+let fitemp32=document.getElementById('noKick')
+let fitemp42=document.getElementById('noJoy')
+let fitemp52=document.getElementById('noLove')
+
+
+    if (ConditionalCount==1){
+      
+    if(isNaN(parseFloat(fitemp12.value))==false && isNaN(parseFloat(fitemp22.value))==false && isNaN(parseFloat(fitemp32.value))==false && isNaN(parseFloat(fitemp42.value))==false && isNaN(parseFloat(fitemp52.value))==false ){
+     if(parseFloat(fitemp12.value)==(forNo/6).toFixed(2) && parseFloat(fitemp22.value)==likelihood[4] && parseFloat(fitemp32.value)==likelihood[5] && parseFloat(fitemp42.value)==likelihood[6]  && parseFloat(fitemp52.value)==likelihood[7] ){
+        temp10=document.getElementById('negind')
+        new_instance_no=((forNo/6)*(likelihood[4])*likelihood[5]*likelihood[6]*likelihood[7]).toFixed(4)
+        if(new_instance_no==0){
+            new_instance_no=((forNo/6)*(likelihood[4])*likelihood[5]*likelihood[6]*likelihood[7]).toFixed(8)
+        }
+        temp10.innerHTML="<b>P(-h|d₇)</b> = "+new_instance_no
+        
+        let temp17 = document.getElementById("divcshow")
+    temp17.innerHTML=''
+    let temp90=document.getElementById("one")
+temp90.checked=false
+let temp91=document.getElementById("two")
+temp91.checked=false
+
+        addlike=0
+        let temp6= document.getElementById("submitFreq")
+    temp6.disabled=true
+    temp6.style.cursor="not-allowed"
+    let temp7= document.getElementById("nextbt")
+    temp7.onclick=function(){tonextAnalyze()}
+    temp7.disabled=false
+    temp7.style.cursor="pointer"
+    let temp13= document.getElementById("reset")
+    temp13.onclick=function(){ toresetConditional2()}
+    let fitemp12=document.getElementById('no')
+    Swal.fire({
+  icon: 'success',
+  html: 'Click on the <b style="color:#004E86">NEXT</b> button.',
+  showCancelBotton:true,
+  allowOutsideClick: false,
+  target: '.container',
+  customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },   
+});
+  
+       }
+       else{
+    let countyn =0;
+    let c=''
+    let g =''
+    if (parseFloat(fitemp12.value)!=(forNo/6).toFixed(2)){
+        c=c+"P(-h) ,"
+        countyn=countyn+1
+        fitemp12.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp12.style.border=""
+    }
+    if (parseFloat(fitemp22.value)!=likelihood[4]){
+        c=c+"P(Pain|-h) ,"
+        countyn=countyn+1
+        fitemp22.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp22.style.border=""
+    }
+    if (parseFloat(fitemp32.value)!=likelihood[5]){
+        c=c+"P(Kick|-h) ,"
+        countyn=countyn+1
+        fitemp32.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp32.style.border=""
+    }
+    if (parseFloat(fitemp42.value)!=likelihood[6]){
+        c=c+"P(Joy|-h) ,"
+        countyn=countyn+1
+        fitemp42.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp42.style.border=""
+    }
+    if (parseFloat(fitemp52.value)!=likelihood[7]){
+        c=c+"P(Love|-h) ,"
+        countyn=countyn+1
+        fitemp52.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp52.style.border=""
+    }
+    
+    if(countyn==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c="Value entered in "+c+" field is incorrect."
+        g='INCORRECT VALUE'
+    }
+    if(countyn>1 && countyn<5){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c="Values entered in "+c+" fields are incorrect."
+        g='INCORRECT VALUES!'
+    }
+    if(countyn==5){
+        c="Values entered in all the fields are incorrect."
+        g='INCORRECT VALUES!'
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },   
+    });
+
+    }
+  }
+  else{
+    let countyn =0;
+    let c=''
+    let e=''
+    if (isNaN(parseFloat(fitemp12.value))==true){
+        c=c+"P(-h) ,"
+        countyn=countyn+1
+        fitemp12.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp12.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp22.value))==true){
+        c=c+"P(Pain|-h) ,"
+        countyn=countyn+1
+        fitemp22.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp22.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp32.value))==true){
+        c=c+"P(Kick|-h) ,"
+        countyn=countyn+1
+        fitemp32.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp32.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp42.value))==true){
+        c=c+"P(Joy|-h) ,"
+        countyn=countyn+1
+        fitemp42.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp42.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp52.value))==true){
+        c=c+"P(Love|-h) ,"
+        countyn=countyn+1
+        fitemp52.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp52.style.border=""
+    }
+  
+    if(countyn==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c="Enter a value in "+c+" field."
+        e="MISSING VALUE"
+    }
+    if(countyn>1 && countyn<5){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c="Enter the values in "+c+" fields."
+        e="MISSING VALUES!"
+    }
+    if(countyn==5){
+        c="Enter the values in all the fields."
+        e="MISSING VALUES!"
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: e,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+
+    }
+    
+}
+
+    if (ConditionalCount==0){
+    
+    if(isNaN(parseFloat(fitemp11.value))==false && isNaN(parseFloat(fitemp21.value))==false && isNaN(parseFloat(fitemp31.value))==false && isNaN(parseFloat(fitemp41.value))==false && isNaN(parseFloat(fitemp51.value))==false){
+     if(parseFloat(fitemp11.value)==(forYes/6).toFixed(2) && parseFloat(fitemp21.value)==likelihood[0] && parseFloat(fitemp31.value)==likelihood[1] && parseFloat(fitemp41.value)==likelihood[2] && parseFloat(fitemp51.value)==likelihood[3] ){
+        temp10=document.getElementById('addind')
+        new_instance_yes=((forYes/6)*(likelihood[0])*likelihood[1]*likelihood[2]*likelihood[3]).toFixed(4)
+        if(new_instance_yes==0){
+            new_instance_yes=((forYes/6)*(likelihood[0])*likelihood[1]*likelihood[2]*likelihood[3]).toFixed(8)
+        }
+        temp10.innerHTML="<b>P(h|d₇) </b>= "+new_instance_yes
+        addlike=2
+        ConditionalCount=1
+
+        let temp17 = document.getElementById("divcshow")
+    temp17.innerHTML=''
+    let temp90=document.getElementById("one")
+temp90.checked=false
+let temp91=document.getElementById("two")
+temp91.checked=false
+
+
+fitemp12.disabled=false
+fitemp22.disabled=false
+fitemp32.disabled=false
+fitemp42.disabled=false
+fitemp52.disabled=false
+
+
+fitemp12.style.cursor="pointer"
+fitemp22.style.cursor="pointer"
+fitemp32.style.cursor="pointer"
+fitemp42.style.cursor="pointer"
+fitemp52.style.cursor="pointer"
+
+  
+       }
+       else{
+    let countyn =0;
+    let c=''
+    let g =''
+    if (parseFloat(fitemp11.value)!=(forNo/6).toFixed(2)){
+        c=c+"P(h) ,"
+        countyn=countyn+1
+        
+            fitemp11.style.border="2px solid red"
+        }
+        else{
+            
+            fitemp11.style.border=""
+        }
+    if (parseFloat(fitemp21.value)!=likelihood[0]){
+        c=c+"P(Pain|h) ,"
+        countyn=countyn+1
+        
+        fitemp21.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp21.style.border=""
+    }
+    if (parseFloat(fitemp31.value)!=likelihood[1]){
+        c=c+"P(Kick|h) ,"
+        countyn=countyn+1
+        
+        fitemp31.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp31.style.border=""
+    }
+    if (parseFloat(fitemp41.value)!=likelihood[2]){
+        c=c+"P(Joy|h) ,"
+        countyn=countyn+1
+        
+        fitemp41.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp41.style.border=""
+    }
+    if (parseFloat(fitemp51.value)!=likelihood[3]){
+        c=c+"P(Love|h) ,"
+        countyn=countyn+1
+        
+        fitemp51.style.border="2px solid red"
+    }
+    else{
+        
+        fitemp51.style.border=""
+    }
+    
+
+    if(countyn==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c="Value entered in "+c+" field is incorrect."
+        g='INCORRECT VALUE'
+    }
+    if(countyn>1 && countyn<5){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c="Values entered in "+c+" fields are incorrect."
+        g='INCORRECT VALUES!'
+    }
+    if(countyn==5){
+        c="Values entered in all the fields are incorrect. "
+        g='INCORRECT VALUES!'
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: g,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },    
+    });
+
+    }
+  }
+  else{
+    let countyn =0;
+    let c=''
+    let e=''
+    if (isNaN(parseFloat(fitemp11.value))==true){
+        c=c+"P(h) ,"
+        countyn=countyn+1
+        fitemp11.style.border="2px solid red"
+
+    }
+    else{
+        fitemp11.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp21.value))==true){
+        c=c+"P(Pain|h) ,"
+        countyn=countyn+1
+        fitemp21.style.border="2px solid red"
+
+    }
+    else{
+        fitemp21.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp31.value))==true){
+        c=c+"P(Kick|h) ,"
+        countyn=countyn+1
+        fitemp31.style.border="2px solid red"
+
+    }
+    else{
+        fitemp31.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp41.value))==true){
+        c=c+"P(Joy|h) ,"
+        countyn=countyn+1
+        fitemp41.style.border="2px solid red"
+    }
+    else{
+        fitemp41.style.border=""
+    }
+    if (isNaN(parseFloat(fitemp51.value))==true){
+        c=c+"P(Love|h) ,"
+        countyn=countyn+1
+        fitemp51.style.border="2px solid red"
+    }
+    else{
+        fitemp51.style.border=""
+    }
+   
+    if(countyn==1){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c=''
+    c=tempa[0] 
+        c="Enter a value in "+c+" field."
+        e="MISSING VALUE"
+    }
+    if(countyn>1 && countyn<5){
+        tempa = c.split(" ,");
+      tempa.pop()
+      c='' 
+      for(let i=0;i<tempa.length;i++){
+        if (i!=tempa.length-1){
+          c=c+tempa[i]+', '
+        }
+        if(i==tempa.length-1){
+          c=c+'and '+tempa[i]
+        }
+      }
+        c="Enter the values in "+c+" fields."
+        e="MISSING VALUES!"
+    }
+    if(countyn==5){
+        c="Enter the values in all the fields."
+        e="MISSING VALUES!"
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: e,
+      text: c,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },     
+    });
+
+    }
+    }
+
+
+    }
+
+
+}
+
+function tonextAnalyze(){
+
+let temp1=document.getElementById("tab-2")
+temp1.style.color="#FFC000"
+temp1.style.backgroundColor="#004E86"
+temp1.style.fontWeight="normal"
+document.getElementById('calimg').src="images/training.png"
+
+
+let temp2=document.getElementById("tab-3")
+temp2.style.color="#004E86"
+temp2.style.backgroundColor="#ffd964"
+temp2.style.fontWeight="bold"
+document.getElementById('anaimg').src="images/analyse1.png"
+
+
+document.getElementById("finalhide").style.display='none'
+document.getElementById("finalhide2").style.display='none'
+
+
+
+
+let temp5=document.getElementById("finale2")
+
+let temp4=document.getElementById('dataPointsTable');
+temp4.style.display=''
+temp4.style.marginTop='60px'
+temp4.style.marginLeft='50px'
+temp4.style.width="80%";
+
+let temp3= document.getElementById('finale1');
+temp3.innerHTML=`<header id="trainToTest" class="header-box">DATASET</header>`
+temp3.appendChild(temp4)
+
+document.getElementById("finalshow").style.display=""
+document.getElementById('retb').style.display=""
+
+temp5.innerHTML=`
+    <b style="color:#004E86">
+    P(h|d₇) = ${new_instance_yes}
+    <br>
+    <br>
+    <br>
+    P(-h|d₇) = ${new_instance_no}
+    <br>
+    <br>
+    <br></b>`
+    
+    Swal.fire({
+      icon: 'info',
+      title: "PREDICTION",
+      html:`Whichever class has the highest posterior probability, d₇ will belong to that class.`,
+      allowOutsideClick: false,
+      target: '.container',
+      customClass: {
+            container: "position-absolute",
+            popup: "swal-popup",
+            title: "swal-title",
+            content: "swal-content",
+        },    
+    });
+
+if(new_instance_yes>new_instance_no){
+    temp5.innerHTML=temp5.innerHTML+`<b style="color:#004E86">
+        P(h|d₇) > P(-h|d₇)
+    <br>
+    <br>
+    <br>
+    {d₇ : ${target_dict[0]}}
+    <br>
+    <br>
+    <br>
+    <p style="color:#004E86">
+        Therefore, class label for testing example (d₇) is: Yes</p></b>
+        `
+    let temp7= (document.getElementById("TOBOLD")).getElementsByTagName('td')
+temp7[2].innerHTML="YES"
+temp7[2].style.color="#004E86"
+
+}
+if(new_instance_yes<new_instance_no){
+    temp5.innerHTML=temp5.innerHTML+`<b style="color:#004E86">P(-h|d₇) > P(h|d₇)
+    <br>
+    <br>
+    <br>
+    {d₇ : ${target_dict[0]}}
+    <br>
+    <br><br>
+    <p style="color:#004E86">
+        Therefore, class label for testing example (d₇) is: No</p></b></div>
+        `
+
+        let temp7= (document.getElementById("TOBOLD")).getElementsByTagName('td')
+temp7[2].innerHTML="NO"
+temp7[2].style.color="#004E86"
+    
+}
+if(new_instance_yes==new_instance_no){
+    temp5.innerHTML=temp5.innerHTML+`<b style="color:#004E86">
+        P(h|d₇) == P(-h|d₇)
+    <br>
+    <br>
+    <br>
+    {d₇ : ${target_dict[0]}}
+    <br>
+    <br><br>
+    <p style="color:#004E86">
+        Therefore, class label for testing example (d₇) : cannot be determined.</p></b>
+        `
+
+   
+        let temp7= (document.getElementById("TOBOLD")).getElementsByTagName('td')
+
+temp7[2].style.color="#004E86"
+
+}
+if(new_instance_yes==0 && new_instance_no==0){
+    temp5.innerHTML=temp5.innerHTML+`<b style="color:#004E86">P(h|d₇) == P(-h|d₇) == 0
+    <br>
+    <br>
+    <br>
+    {d₇ : ${target_dict[0]}}
+    <br>
+    <br><br>
+    <p style="color:#004E86">
+        Therefore, class label for testing example (d₇) : cannot be determined.</p></b></div>
+        `
+
+      
+
+        let temp7= (document.getElementById("TOBOLD")).getElementsByTagName('td')
+temp7[2].style.color="#004E86"
+}
+
+
+}
+
+function toreset(){
+    let temp=document.getElementById("addin")
+    let temp2=document.getElementById("negin")
+    temp.value=''
+    temp2.value=''
+    temp.style.border=""
+    temp2.style.border=""
+    let temp3= document.getElementById("forformule")
+    temp3.innerHTML=""
+
+    uncheck3.checked=false
+    uncheck4.checked=false
+    uncheck7.checked=false
+    uncheck5.checked=false
+}
+
+
+function toresetConditional1(){
+    let temp1= document.getElementById("forformule")
+    temp1.innerHTML=""
+    
+    uncheck3.checked=false
+    uncheck4.checked=false
+    uncheck7.checked=false
+    uncheck5.checked=false
+
+    if(target_dict[0]=='Love Pain Joy Love Kick')
+    {
+        if(ConditionalCount==1){
+        let fitemp11=document.getElementById('no')
+let fitemp21=document.getElementById('noLove')
+let fitemp31=document.getElementById('noPain')
+let fitemp41=document.getElementById('noJoy')
+let fitemp51=document.getElementById('noLove2')
+let fitemp61=document.getElementById('noKick')
+
+fitemp11.value=''
+fitemp21.value=''
+fitemp31.value=''
+fitemp41.value=''
+fitemp51.value=''
+fitemp61.value=''
+
+fitemp11.style.border=""
+fitemp21.style.border=""
+fitemp31.style.border=""
+fitemp41.style.border=""
+fitemp51.style.border=""
+fitemp61.style.border=""
+
+let temp17 = document.getElementById("divcshow")
+    temp17.innerHTML=''
+    let temp90=document.getElementById("one")
+temp90.checked=false
+let temp91=document.getElementById("two")
+temp91.checked=false
+
+    }
+    if(ConditionalCount==0){
+        let fitemp11=document.getElementById('yes')
+let fitemp21=document.getElementById('yesLove')
+let fitemp31=document.getElementById('yesPain')
+let fitemp41=document.getElementById('yesJoy')
+let fitemp51=document.getElementById('yesLove2')
+let fitemp61=document.getElementById('yesKick')
+
+fitemp11.value=''
+fitemp21.value=''
+fitemp31.value=''
+fitemp41.value=''
+fitemp51.value=''
+fitemp61.value=''
+
+fitemp11.style.border=""
+fitemp21.style.border=""
+fitemp31.style.border=""
+fitemp41.style.border=""
+fitemp51.style.border=""
+fitemp61.style.border=""
+
+let temp17 = document.getElementById("divcshow")
+    temp17.innerHTML=''
+
+document.getElementById("one").checked=false;
+document.getElementById("two").checked=false;
+
+    }
+
+    }
+    
+    else if(target_dict[0]=='Good Love Kick Joy')
+    {
+        if(ConditionalCount==1){
+        let fitemp11=document.getElementById('no')
+let fitemp21=document.getElementById('noGood')
+let fitemp31=document.getElementById('noLove')
+let fitemp41=document.getElementById('noKick')
+let fitemp51=document.getElementById('noJoy')
+
+
+fitemp11.value=''
+fitemp21.value=''
+fitemp31.value=''
+fitemp41.value=''
+fitemp51.value=''
+
+
+fitemp11.style.border=""
+fitemp21.style.border=""
+fitemp31.style.border=""
+fitemp41.style.border=""
+fitemp51.style.border=""
+
+
+let temp17 = document.getElementById("divcshow")
+    temp17.innerHTML=''
+    let temp90=document.getElementById("one")
+temp90.checked=false
+let temp91=document.getElementById("two")
+temp91.checked=false
+
+    }
+    if(ConditionalCount==0){
+        let fitemp11=document.getElementById('yes')
+let fitemp21=document.getElementById('yesGood')
+let fitemp31=document.getElementById('yesLove')
+let fitemp41=document.getElementById('yesKick')
+let fitemp51=document.getElementById('yesJoy')
+
+
+fitemp11.value=''
+fitemp21.value=''
+fitemp31.value=''
+fitemp41.value=''
+fitemp51.value=''
+
+
+fitemp11.style.border=""
+fitemp21.style.border=""
+fitemp31.style.border=""
+fitemp41.style.border=""
+fitemp51.style.border=""
+
+
+let temp17 = document.getElementById("divcshow")
+    temp17.innerHTML=''
+
+document.getElementById("one").checked=false;
+document.getElementById("two").checked=false;
+
+    }
+
+    }
+   
+    else if(target_dict[0]=='Pain Kick Joy Love')
+    {
+        if(ConditionalCount==1){
+        let fitemp11=document.getElementById('no')
+let fitemp21=document.getElementById('noPain')
+let fitemp31=document.getElementById('noKick')
+let fitemp41=document.getElementById('noJoy')
+let fitemp51=document.getElementById('noLove')
+
+
+fitemp11.value=''
+fitemp21.value=''
+fitemp31.value=''
+fitemp41.value=''
+fitemp51.value=''
+
+
+fitemp11.style.border=""
+fitemp21.style.border=""
+fitemp31.style.border=""
+fitemp41.style.border=""
+fitemp51.style.border=""
+
+
+let temp17 = document.getElementById("divcshow")
+    temp17.innerHTML=''
+    let temp90=document.getElementById("one")
+temp90.checked=false
+let temp91=document.getElementById("two")
+temp91.checked=false
+
+    }
+    if(ConditionalCount==0){
+        let fitemp11=document.getElementById('yes')
+let fitemp21=document.getElementById('yesPain')
+let fitemp31=document.getElementById('yesKick')
+let fitemp41=document.getElementById('yesJoy')
+let fitemp51=document.getElementById('yesLove')
+
+
+fitemp11.value=''
+fitemp21.value=''
+fitemp31.value=''
+fitemp41.value=''
+fitemp51.value=''
+
+
+fitemp11.style.border=""
+fitemp21.style.border=""
+fitemp31.style.border=""
+fitemp41.style.border=""
+fitemp51.style.border=""
+
+
+let temp17 = document.getElementById("divcshow")
+    temp17.innerHTML=''
+
+document.getElementById("one").checked=false;
+document.getElementById("two").checked=false;
+
+    }
+
+    }
+   
+}
+
+
+function toresetConditional2(){
+
+    if(target_dict[0]=='Love Pain Joy Love Kick')
+    {
+        let temp1=document.getElementById('addind')
+    temp1.innerHTML="    <b style='color:#004E86'>P(h|d₇)</b> = <input id=yes placeholder = 'P(h)' type=number max=null min=0 style='width:50px;text-align: center;'> * \
+        <input id=yesLove placeholder = 'P(Love|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesPain placeholder = 'P(Pain|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesJoy placeholder = 'P(Joy|h)' type=number max=10 min=0 style='margin-left: 75px;margin-top: 10px;width:80px;text-align: center;'> * \
+        <input id=yesLove2 placeholder = 'P(Love|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesKick placeholder = 'P(Kick|h)' type=number max=10 min=0 style='width:80px;text-align: center;'>"
+
+
+    let temp2=document.getElementById("negind")
+    temp2.innerHTML="<b style='color:#004E86'>P(-h|d₇)</b> = <input id=no placeholder = 'P(-h)'type=number max=10 min=0 disabled=true style='width:50px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noLove placeholder = 'P(Love|-h)' type=number max=10 min=0 disabled=true style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noPain placeholder = 'P(Pain|-h)' type=number max=10 min=0 disabled=true style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noJoy placeholder = 'P(Joy|-h)' type=number disabled=true max=10 min=0 style='margin-left: 82px;margin-top: 10px;width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noLove2 placeholder = 'P(Love|-h)' type=number disabled=true max=10 min=0 style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noKick placeholder = 'P(Kick|-h)' type=number disabled=true max=10 min=0 style='width:80px;text-align: center;cursor:not-allowed;'>"
+
+    }
+    else if(target_dict[0]=='Good Love Kick Joy')
+    {
+        let temp1=document.getElementById('addind')
+        temp1.innerHTML="<b style='color:#004E86'>P(h|d₇)</b> = <input id=yes placeholder = 'P(h)' type=number max=null min=0 style='width:50px;text-align: center;'> * \
+        <input id=yesGood placeholder = 'P(Good|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesLove placeholder = 'P(Love|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesKick placeholder = 'P(Kick|h)' type=number max=10 min=0 style='margin-left: 75px;margin-top: 10px;width:80px;text-align: center;'> * \
+        <input id=yesJoy placeholder = 'P(Joy|h)' type=number max=10 min=0 style='width:80px;text-align: center;'>"    
+        let temp2=document.getElementById("negind")
+        temp2.innerHTML="<b style='color:#004E86'>P(-h|d₇)</b> = <input id=no placeholder = 'P(-h)'type=number max=10 min=0 disabled=true style='width:50px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noGood placeholder = 'P(Good|-h)' type=number max=10 min=0 disabled=true style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noLove placeholder = 'P(Love|-h)' type=number max=10 min=0 disabled=true style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noKick placeholder = 'P(Kick|-h)' type=number disabled=true max=10 min=0 style='width:80px;text-align: center;cursor:not-allowed;margin-left: 82px;margin-top: 10px;'> * \
+        <input id=noJoy placeholder = 'P(Joy|-h)' type=number disabled=true max=10 min=0 style='width:80px;text-align: center;cursor:not-allowed;'> "
+    }
+    
+    else if(target_dict[0]=='Pain Kick Joy Love')
+    {
+        let temp1=document.getElementById('addind')
+        temp1.innerHTML="<b style='color:#004E86'>P(h|d₇)</b> = <input id=yes placeholder = 'P(h)' type=number max=null min=0 style='width:50px;text-align: center;'> * \
+        <input id=yesPain placeholder = 'P(Pain|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesKick placeholder = 'P(Kick|h)' type=number max=10 min=0 style='width:80px;text-align: center;'> * \
+        <input id=yesJoy placeholder = 'P(Joy|h)' type=number max=10 min=0 style='margin-left: 75px;margin-top: 10px;width:80px;text-align: center;'> * \
+        <input id=yesLove placeholder = 'P(Love|h)' type=number max=10 min=0 style='width:80px;text-align: center;'>"    
+        let temp2=document.getElementById("negind")
+        temp2.innerHTML="<b style='color:#004E86'>P(-h|d₇)</b> = <input id=no placeholder = 'P(-h)'type=number max=10 min=0 disabled=true style='width:50px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noPain placeholder = 'P(Pain|-h)' type=number max=10 min=0 disabled=true style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noKick placeholder = 'P(Kick|-h)' type=number max=10 min=0 disabled=true style='width:80px;text-align: center;cursor:not-allowed;'> * \
+        <input id=noJoy placeholder = 'P(Joy|-h)' type=number disabled=true max=10 min=0 style='width:80px;text-align: center;cursor:not-allowed;margin-left: 82px;margin-top: 10px;'> * \
+        <input id=noLove placeholder = 'P(Love|-h)' type=number disabled=true max=10 min=0 style='width:80px;text-align: center;cursor:not-allowed;'> "
+       
+    }
+
+    document.getElementById("submitFreq").disabled=false;
+    document.getElementById("nextbt").disabled=true;
+
+    ConditionalCount=0;
+
+    let temp3 = document.getElementById("divcshow")
+    temp3.innerHTML=''
+
+    document.getElementById("one").checked=false
+    document.getElementById("two").checked=false
+   
+
+    let temp4= document.getElementById("forformule")
+    temp4.innerHTML=""
+
+    uncheck3.checked=false
+    uncheck4.checked=false
+    uncheck7.checked=false
+    uncheck5.checked=false
+
+    addlike=1;
+}
+
+
+function addprior(){
+    let temp21 = document.getElementById("divcshow")
+    if(addlike ==0){
+    temp21.innerHTML=`<div style="display:flex;justify-content: space-around;width: 100%;flex-direction: column;align-items: center;height: 60%;">
+<div style="font-weight: bold; font-size: 25px;">P(h) = ${(foYes/6).toFixed(2)}</div>                
+<div style="font-weight: bold; font-size: 25px;">P(-h) = ${(forNo/6).toFixed(2)}</div>
+</div>`}
+if(addlike ==1){
+    temp21.innerHTML=`<div style="display:flex;justify-content: space-around;width: 100%;flex-direction: column;align-items: center;height: 60%;">
+        <span style="color: #004E86"><div style="font-weight: bold; font-size: 25px;">P(h) = ${(forYes/6).toFixed(2)}</div> </span>               
+<div style="font-weight: bold; font-size: 25px;">P(-h) = ${(forNo/6).toFixed(2)}</div>
+</div>`}
+if(addlike ==2){
+    temp21.innerHTML=`<div style="display:flex;justify-content: space-around;width: 100%;flex-direction: column;align-items: center;height: 60%;">
+<div style="font-weight: bold; font-size: 25px;">P(h) = ${(forYes/6).toFixed(2)}</div>                
+<span style="color: #004E86"><div style="font-weight: bold; font-size: 25px;">P(-h) = ${(forNo/6).toFixed(2)}</div></span>
+</div>`}
+  
+}
+
+function addlikelihood(){
+    let temp21 = document.getElementById("divcshow")
+    if(target_dict[0]=='Love Pain Joy Love Kick')
+    {
+        if(addlike ==0){
+    temp21.innerHTML=`<p>
+        <b>P(Love|h) = ${likelihood[0]}</b></p>
+        <p>
+            <b>P(Love|-h) = ${likelihood[4]}</b></p>
+        <p>
+          <b>P(Pain|h) = ${likelihood[1]}</b></p>
+        <p>
+            <b>P(Pain|-h) = ${likelihood[5]}</b></p>
+        <p>
+            <b>P(Joy|h) = ${likelihood[2]}</b></p>
+        <p>
+            <b>P(Joy|-h) = ${likelihood[6]}</b></p>
+            <p>
+            <b>P(Kick|h) = ${likelihood[3]}</b></p>
+        <p>
+            <b>P(Kick|-h) = ${likelihood[7]}</b></p>
+        `
+        }
+    if(addlike ==1){
+        temp21.innerHTML=`<table style="width:auto;">
+            <tr style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Love|h)</td>
+                                            <td style="font-size:15px">${likelihood[0]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Love|-h)</td>
+                                            <td style="font-size:15px">${likelihood[4]}</td>                            
+            </tr>
+            <tr style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Pain|h)</td>
+                                            <td style="font-size:15px">${likelihood[1]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Pain|-h)</td>
+                                            <td style="font-size:15px">${likelihood[5]}</td>                            
+            </tr>
+            <tr style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Joy|h)</td>
+                                            <td style="font-size:15px">${likelihood[2]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Joy|-h)</td>
+                                            <td style="font-size:15px">${likelihood[6]}</td>                            
+            </tr>
+            <tr style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Kick|h)</td>
+                                            <td style="font-size:15px">${likelihood[3]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Kick|-h)</td>
+                                            <td style="font-size:15px">${likelihood[7]}</td>                            
+            </tr>
+
+</table>`
+            
+        }
+        if(addlike ==2){
+            temp21.innerHTML=`<table style="width:auto;font-size:15px">
+            <tr>
+                                            <td style="font-size:15px">P(Love|h)</td>
+                                            <td style="font-size:15px">${likelihood[0]}</td>                            
+            </tr>
+            <tr  style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Love|-h)</td>
+                                            <td style="font-size:15px">${likelihood[4]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Pain|h)</td>
+                                            <td style="font-size:15px">${likelihood[1]}</td>                            
+            </tr>
+            <tr  style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Pain|-h)</td>
+                                            <td style="font-size:15px">${likelihood[5]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Joy|h)</td>
+                                            <td style="font-size:15px">${likelihood[2]}</td>                            
+            </tr>
+            <tr  style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Joy|-h)</td>
+                                            <td style="font-size:15px">${likelihood[6]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Kick|h)</td>
+                                            <td style="font-size:15px">${likelihood[3]}</td>                            
+            </tr>
+            <tr  style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Kick|-h)</td>
+                                            <td style="font-size:15px">${likelihood[7]}</td>                            
+            </tr>
+
+</table>`
+        }
+  
+    }
+  
+    else if(target_dict[0]=='Good Love Kick Joy')
+    {
+        if(addlike ==0){
+    temp21.innerHTML=`<p>
+        <b>P(Good|h) = ${likelihood[0]}</b></p>
+        <p>
+            <b>P(Good|-h) = ${likelihood[4]}</b></p>
+        <p>
+          <b>P(Love|h) = ${likelihood[1]}</b></p>
+        <p>
+            <b>P(Love|-h) = ${likelihood[5]}</b></p>
+        <p>
+            <b>P(Kick|h) = ${likelihood[2]}</b></p>
+        <p>
+            <b>P(Kick|-h) = ${likelihood[6]}</b></p>
+            <p>
+            <b>P(Joy|h) = ${likelihood[3]}</b></p>
+        <p>
+            <b>P(Joy|-h) = ${likelihood[7]}</b></p>
+        `
+        }
+    if(addlike ==1){
+        temp21.innerHTML=`<table style="width:auto;">
+            <tr style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Good|h)</td>
+                                            <td style="font-size:15px">${likelihood[0]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Good|-h)</td>
+                                            <td style="font-size:15px">${likelihood[4]}</td>                            
+            </tr>
+            <tr style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Love|h)</td>
+                                            <td style="font-size:15px">${likelihood[1]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Love|-h)</td>
+                                            <td style="font-size:15px">${likelihood[5]}</td>                            
+            </tr>
+            <tr style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Kick|h)</td>
+                                            <td style="font-size:15px">${likelihood[2]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Kick|-h)</td>
+                                            <td style="font-size:15px">${likelihood[6]}</td>                            
+            </tr>
+            <tr style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Joy|h)</td>
+                                            <td style="font-size:15px">${likelihood[3]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Joy|-h)</td>
+                                            <td style="font-size:15px">${likelihood[7]}</td>                            
+            </tr>
+
+</table>`
+            
+        }
+        if(addlike ==2){
+            temp21.innerHTML=`<table style="width:auto;font-size:15px">
+            <tr>
+                                            <td style="font-size:15px">P(Good|h)</td>
+                                            <td style="font-size:15px">${likelihood[0]}</td>                            
+            </tr>
+            <tr  style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Good|-h)</td>
+                                            <td style="font-size:15px">${likelihood[4]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Love|h)</td>
+                                            <td style="font-size:15px">${likelihood[1]}</td>                            
+            </tr>
+            <tr  style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Love|-h)</td>
+                                            <td style="font-size:15px">${likelihood[5]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Kick|h)</td>
+                                            <td style="font-size:15px">${likelihood[2]}</td>                            
+            </tr>
+            <tr  style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Kick|-h)</td>
+                                            <td style="font-size:15px">${likelihood[6]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Joy|h)</td>
+                                            <td style="font-size:15px">${likelihood[3]}</td>                            
+            </tr>
+            <tr  style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Joy|-h)</td>
+                                            <td style="font-size:15px">${likelihood[7]}</td>                            
+            </tr>
+
+</table>`
+        }
+  
+    }
+
+    else if(target_dict[0]=='Pain Kick Joy Love')
+    {
+        if(addlike ==0){
+    temp21.innerHTML=`<p>
+        <b>P(Pain|h) = ${likelihood[0]}</b></p>
+        <p>
+            <b>P(Pain|-h) = ${likelihood[4]}</b></p>
+        <p>
+          <b>P(Kick|h) = ${likelihood[1]}</b></p>
+        <p>
+            <b>P(Kick|-h) = ${likelihood[5]}</b></p>
+        <p>
+            <b>P(Joy|h) = ${likelihood[2]}</b></p>
+        <p>
+            <b>P(Joy|-h) = ${likelihood[6]}</b></p>
+            <p>
+            <b>P(Love|h) = ${likelihood[3]}</b></p>
+        <p>
+            <b>P(Love|-h) = ${likelihood[7]}</b></p>
+        `
+        }
+    if(addlike ==1){
+        temp21.innerHTML=`<table style="width:auto;">
+            <tr style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Pain|h)</td>
+                                            <td style="font-size:15px">${likelihood[0]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Pain|-h)</td>
+                                            <td style="font-size:15px">${likelihood[4]}</td>                            
+            </tr>
+            <tr style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Kick|h)</td>
+                                            <td style="font-size:15px">${likelihood[1]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Kick|-h)</td>
+                                            <td style="font-size:15px">${likelihood[5]}</td>                            
+            </tr>
+            <tr style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Joy|h)</td>
+                                            <td style="font-size:15px">${likelihood[2]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Joy|-h)</td>
+                                            <td style="font-size:15px">${likelihood[6]}</td>                            
+            </tr>
+            <tr style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Love|h)</td>
+                                            <td style="font-size:15px">${likelihood[3]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Love|-h)</td>
+                                            <td style="font-size:15px">${likelihood[7]}</td>                            
+            </tr>
+
+</table>`
+            
+        }
+        if(addlike ==2){
+            temp21.innerHTML=`<table style="width:auto;font-size:15px">
+            <tr>
+                                            <td style="font-size:15px">P(Pain|h)</td>
+                                            <td style="font-size:15px">${likelihood[0]}</td>                            
+            </tr>
+            <tr  style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Pain|-h)</td>
+                                            <td style="font-size:15px">${likelihood[4]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Kick|h)</td>
+                                            <td style="font-size:15px">${likelihood[1]}</td>                            
+            </tr>
+            <tr  style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Kick|-h)</td>
+                                            <td style="font-size:15px">${likelihood[5]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Joy|h)</td>
+                                            <td style="font-size:15px">${likelihood[2]}</td>                            
+            </tr>
+            <tr  style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Joy|-h)</td>
+                                            <td style="font-size:15px">${likelihood[6]}</td>                            
+            </tr>
+            <tr>
+                                            <td style="font-size:15px">P(Love|h)</td>
+                                            <td style="font-size:15px">${likelihood[3]}</td>                            
+            </tr>
+            <tr  style="color: #004E86;font-weight:600;">
+                                            <td style="font-size:15px">P(Love|-h)</td>
+                                            <td style="font-size:15px">${likelihood[7]}</td>                            
+            </tr>
+
+</table>`
+        }
+  
+    }
+}
+  
+
+        </script>
+        
+        <script>
+
+            function priorf()
+            {
+                let temp=document.getElementById("forformule")
+                temp.innerHTML=`<div style="font-weight: bold;  font-size: large; "><span style="color:#004E86">P(class) </span> =
+                                    <math style="font-weight: bold; font-size: 25px; ">
+                                        <mfrac>
+                                            <mrow>
+                                                <mn>number of documents in class</mn>
+                                            </mrow>
+                                            <mn>total number of documents</mn>
+                                        </mfrac>
+                                    </math> 
+                                </div>  <br>
+                                <div style=" padding-left: 10px; font-size: medium; ">
+                                   <span style="color:#004E86">where,</span><br>
+                                   <ul>            
+                                    <li>The numerator represents the count of documents labeled with the specific class in the training dataset,</li>
+                                    <li>The denominator represents the total count of documents in the training dataset.</li>
+                                    </ul>                                                               
+                                </div>`
+            }
+           
+            function naivebayes(){
+                let temp=document.getElementById("forformule")
+                temp.innerHTML=`<div style="font-weight: bold;  font-size: large; "><span style="color:#004E86">P(class|features) </span> =
+                    <math style="font-weight: bold; font-size: 25px; ">
+        <mfrac>
+          <mrow>
+            <mn> (P(class) * P(features|class))
+                </mn>
+          </mrow>
+          <mn>P(features)</mn>
+        </mfrac>
+    </math> </div><br>
+    <div style=" padding-left: 10px; font-size: medium; ">
+        <span style="color:#004E86">where,</span><br>
+        <b>P(features∣class)</b> is the likelihood probability, representing the probability of observing the features given the class,<br>
+        <b>P(class)</b> is the prior probability of the class,<br>
+        <b>P(features)</b> is the probability of observing the features.</div>`
+        
+            }
+
+            function like(){
+                let temp=document.getElementById("forformule")
+                temp.innerHTML=`<div style="font-weight: bold;  font-size: large; "><span style="color:#004E86">P(word|class) </span> = 
+                    <math style="font-weight: bold; font-size: 25px; ">
+                                        <mfrac>
+                                            <mrow>
+                                                <mn>Count of word in documents of class</mn>
+                                            </mrow>
+                                            <mn>total count of words in documents of class</mn>
+                                        </mfrac>
+                                    </math>  </div> 
+    <div style=" padding-left: 10px; font-size: medium; ">
+        <span style="color:#004E86">where,</span><br>
+        <ul>
+            <li>The numerator represents the number of times the word occurs in documents labeled with the specific class.
+                </li>
+                <li>
+                    The denominator represents the total number of words in all documents labeled with the specific class.
+</li>
+</ul>
+
+
+        
+    
+</div>`
+            }
+
+            function Smoothlike(){
+                let temp=document.getElementById("forformule")
+                temp.innerHTML=`<div style="font-weight: bold;  font-size: large; "><span style="color:#004E86">P(word|class) </span> = 
+                    <math style="font-weight: bold; font-size: 25px; ">
+                                        <mfrac>
+                                            <mrow>
+                                                <mn>Count of word in documents of class + α</mn>
+                                            </mrow>
+                                            <mn>total count of words in documents of class + α * Vocabulary size</mn>
+                                        </mfrac>
+                                    </math>  </div> 
+    <div style=" padding-left: 10px; font-size: medium; ">
+        <span style="color:#004E86">where,</span><br>
+    <b>α</b> is the smoothing parameter (typically set to 1 for Laplace smoothing),<br>
+    Vocabulary size represents the total number of unique words in the vocabulary.
+    
+</div>`
+            }
+        </script>
+        <script src="js/script.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <script>
+            localStorage.removeItem('objectToPass')
+
+
+
+const pageAccessedByReload = (
+  (window.performance.navigation && window.performance.navigation.type === 1) ||
+    window.performance
+      .getEntriesByType('navigation')
+      .map((nav) => nav.type)
+      .includes('reload')
+);
+if(pageAccessedByReload==true){
+    window.location.href="index.html"
+}
+     </script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+
+   
+    </div>
+
+</body>
+
+</html>
