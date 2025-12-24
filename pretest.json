@@ -1,0 +1,52 @@
+[
+  {
+    "question": "What is the key assumption made by Naive Bayes in text classification?",
+    "answers": {
+      "a": "The independence of features",
+      "b": "The dependence of features",
+      "c": "The linearity of features",
+      "d": "The non-linearity of features"
+    },
+    "correctAnswer": "a"
+  },
+  {
+    "question": "In text classification using Naive Bayes, what does the term 'prior probability' refer to?",
+    "answers": {
+      "a": "Probability of observing the features given the class",
+      "b": "Probability of a class occurring independently of the features",
+      "c": "Probability of observing the features",
+      "d": "Probability of a class occurring given the features"
+    },
+    "correctAnswer": "b"
+  },
+  {
+    "question": "How are likelihood probabilities calculated in Naive Bayes for text classification?",
+    "answers": {
+      "a": "By dividing the count of each word by the total count of words in the dataset",
+      "b": "By dividing the count of each word by the total count of documents in the dataset",
+      "c": "By multiplying the count of each word by the total count of words in the dataset",
+      "d": "By multiplying the count of each word by the total count of documents in the dataset"
+    },
+    "correctAnswer": "a"
+  },
+  {
+    "question": "What type of text data preprocessing is commonly performed before applying Naive Bayes for text classification?",
+    "answers": {
+      "a": "Tokenization and lemmatization",
+      "b": "Downsampling and upsampling",
+      "c": "Principal Component Analysis (PCA)",
+      "d": "Feature scaling and normalization"
+    },
+    "correctAnswer": "a"
+  },
+  {
+    "question": "Naive Bayes is commonly used in which type of machine learning tasks?",
+    "answers": {
+      "a": "Text classification",
+      "b": "Image recognition",
+      "c": "Reinforcement learning",
+      "d": "Clustering"
+    },
+    "correctAnswer": "a"
+  }
+]

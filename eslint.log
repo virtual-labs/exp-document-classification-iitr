@@ -1,0 +1,22 @@
+
+/home/runner/work/exp-document-classification-iitr/exp-document-classification-iitr/experiment/simulation/js/script.js
+    2:7   warning  'myContainer' is assigned a value but never used  no-unused-vars
+   38:10  warning  'addTestData' is defined but never used           no-unused-vars
+   57:5   warning  'rl' is not defined                               no-undef
+   58:5   warning  'des' is not defined                              no-undef
+   60:9   warning  'des' is not defined                              no-undef
+   92:7   warning  'g' is not defined                                no-undef
+   93:7   warning  'tempa' is not defined                            no-undef
+   94:7   warning  'tempa' is not defined                            no-undef
+   96:7   warning  'tempa' is not defined                            no-undef
+  101:5   warning  'Swal' is not defined                             no-undef
+  103:14  warning  'g' is not defined                                no-undef
+  123:9   warning  'f' is not defined                                no-undef
+  124:9   warning  'f' is not defined                                no-undef
+  125:9   warning  'f' is not defined                                no-undef
+  131:11  warning  'Swal' is not defined                             no-undef
+  159:39  warning  Unnecessary semicolon                             no-extra-semi
+
+✖ 16 problems (0 errors, 16 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+
